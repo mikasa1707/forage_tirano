@@ -1,0 +1,21 @@
+<div class="admin-dashboard" [class.dark]="isDarkMode" [class.sidebar-closed]="sidebarClosed">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Contenu principal -->
+  <div class="main-content">
+
+    <!-- Header -->
+    <app-header
+      (toggleMenu)="toggleSidebar()"
+      (toggleTheme)="toggleTheme()">
+    </app-header>
+
+    <!-- Contenu des pages -->
+    <div class="page">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>

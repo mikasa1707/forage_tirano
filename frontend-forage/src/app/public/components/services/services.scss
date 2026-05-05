@@ -1,0 +1,188 @@
+/* carousel */
+.carousel-service {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  padding: 10px;
+
+  /* Image de fond + overlay semi-transparent */
+  background: url('/images/fond.jpg') center/cover no-repeat fixed;
+
+  /* Overlay blanc semi-transparent pour le blur */
+  /* On peut utiliser un pseudo-élément pour gérer le blur */
+}
+.carousel-service::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00000096; /* voile transparent */
+  backdrop-filter: blur(5px); /* flou */
+  -webkit-backdrop-filter: blur(5px); /* Safari */
+  pointer-events: none; /* ne bloque pas la souris */
+  z-index: 0;
+}
+
+.carousel-service .list-service .item-service {
+  width: calc(100% - 0%);
+  height: calc(100% - 0%);
+  position: absolute;
+  inset: 0 0 0 0;
+  // margin: 2%;
+}
+.carousel-service .list-service .item-service img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.carousel-service .list-service .item-service .content-service {
+  position: absolute;
+  top: 20%;
+  width: 1140px;
+  max-width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-right: 30%;
+  box-sizing: border-box;
+  color: #fff;
+  text-shadow: 0 5px 10px #0004;
+}
+.carousel-service .list-service .item-service .title-service,
+.carousel-service .list-service .item-service .description-service {
+  font-size: 5em;
+  font-weight: bold;
+  line-height: 1.3em;
+  backdrop-filter: blur(10px);
+  border-radius: 2rem;
+  padding: 5px;
+  text-align: center;
+}
+.carousel-service .list-service .item-service .description-service {
+  font-size: 1.5em;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* Animation d’apparition du contenu */
+@keyframes showContent {
+  to {
+    transform: translateY(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* Par défaut, caché avant l’animation */
+.content-service.animate .title-service,
+.content-service.animate .description-service,
+.main-img.animate {
+  transform: translateY(50px);
+  filter: blur(20px);
+  opacity: 0;
+  animation: showContent 0.5s linear forwards;
+}
+
+/* Délais progressifs pour un effet en cascade */
+.content-service.animate .title-service {
+  animation-delay: 0.2s;
+}
+.content-service.animate .description-service {
+  animation-delay: 0.4s;
+}
+.main-img.animate {
+  animation-delay: 0s;
+}
+
+.thumbnail {
+  position: absolute;
+  bottom: 20px;
+  right: 5%;
+  width: 40vw;
+  z-index: 100;
+  display: flex;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  overflow-x: auto; /* Permet le scroll horizontal */
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  flex-direction: row;
+  white-space: nowrap; /* Empêche le retour à la ligne */
+  padding: 10px;
+}
+.thumbnail .item {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+.thumbnail .item.active {
+//   border-color: #007bff;
+  transform: scale(1.10);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff57;
+  backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f6eff99;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1f6eff99;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff57 #1f6eff99;
+}
+.permanent-marker-regular {
+  font-family: 'Permanent Marker', cursive;
+  font-weight: 200;
+  font-style: normal;
+}
+/* Responsive */
+@media screen and (max-width: 900px) {
+  .carousel-service .list-service .item-service .title-service,
+  .carousel-service .list-service .item-service .description-service {
+    font-size: 2.5em;
+    font-weight: bold;
+    line-height: 1em;
+    backdrop-filter: blur(10px);
+    border-radius: 2rem;
+    padding: 5px;
+    text-align: center;
+  }
+  .carousel-service .list-service .item-service .description-service {
+    font-size: 1em;
+    font-weight: 500;
+    line-height: 1em;
+    color: #ffffff;
+  }
+  .thumbnail {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+  }
+  .carousel-service .list-service .item-service img {
+    width: 100%;
+    height: 90%;
+    object-fit: cover;
+  }
+}

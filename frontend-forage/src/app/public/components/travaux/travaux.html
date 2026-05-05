@@ -1,0 +1,151 @@
+<div class="travaux-page">
+  <h1 class="travaux-title permanent-marker-regular">Nos projets</h1>
+
+  <div class="trav-layout">
+    <!-- ✅ CADRE 1 : travaux sélectionné -->
+    @if (selectedTrav) {
+      <section class="selected-pane">
+        <article class="trav-col is-selected">
+          <div class="trav-card">
+            <div class="trav-media">
+              <img
+                [src]="apiUrl + selectedTrav.photo_principale"
+                [alt]="selectedTrav.titre"
+                loading="lazy"
+                (load)="onImgLoad($event)"
+                (error)="onImgError($event)"
+              />
+              <div class="trav-media-fallback">Image indisponible</div>
+            </div>
+
+            <div class="trav-body">
+              <div class="trav-head">
+                <h3 class="trav-name permanent-marker-regular">
+                  {{ selectedTrav.titre }}
+                </h3>
+                <span
+                  class="trav-status"
+                  [ngClass]="selectedTrav.status"
+                  [title]="selectedTrav.status"
+                >
+                </span>
+              </div>
+
+              <small class="trav-date">
+                {{ selectedTrav.date_debut ? (selectedTrav.date_debut | date: 'dd/MM/yyyy') : '—' }}
+                @if (selectedTrav.date_fin) {
+                  · {{ selectedTrav.date_fin | date: 'dd/MM/yyyy' }}
+                }
+              </small>
+
+              <p class="trav-desc">{{ selectedTrav.description || '—' }}</p>
+            </div>
+          </div>
+
+          <div class="trav-mini">
+            <div class="mini-card">
+              <div class="mini-value">{{ selectedTrav.localisation || '—' }}</div>
+            </div>
+
+            <div class="mini-card">
+              <div class="mini-value">
+                {{ selectedTrav.date_debut ? (selectedTrav.date_debut | date: 'dd/MM/yyyy') : '—' }}
+                @if (selectedTrav.date_fin) {
+                  · {{ selectedTrav.date_fin | date: 'dd/MM/yyyy' }}
+                }
+              </div>
+            </div>
+
+            <button class="btn btn-sm btn-dark mini-btn" (click)="selectTravaux(selectedTrav)">
+              <i class="fa-solid fa-image"></i>
+            </button>
+          </div>
+        </article>
+      </section>
+    }
+
+    <!-- ✅ CADRES 2,3,4,5... : liste cliquable qui swap -->
+    <section class="rail-pane" aria-label="Autres travaux">
+      <div class="trav-rail">
+        @for (t of otherTravaux; track t.id; let idx = $index) {
+          <article class="is-small" (click)="swapToMain(idx)">
+            <div class="trav-card">
+              <div class="trav-media">
+                <img
+                  [src]="apiUrl + t.photo_principale"
+                  [alt]="t.titre"
+                  loading="lazy"
+                  (load)="onImgLoad($event)"
+                  (error)="onImgError($event)"
+                />
+                <div class="trav-media-fallback">Image indisponible</div>
+              </div>
+
+              <div class="trav-body">
+                <div class="trav-head">
+                  <h3 class="trav-name permanent-marker-regular">{{ t.titre }}</h3>
+                  <span class="trav-status" [ngClass]="t.status" [title]="t.status"></span>
+                </div>
+
+                <!-- <small class="trav-date">
+                  {{ t.date_debut ? (t.date_debut | date: 'dd/MM/yyyy') : '—' }}
+                </small> -->
+
+                <!-- <p class="trav-desc">{{ t.description || '—' }}</p> -->
+
+                <!-- si tu veux garder le bouton détails sans déclencher le swap -->
+                <!-- <button
+                  type="button"
+                  class="btn btn-sm btn-outline-light mt-auto align-self-start"
+                  (click)="$event.stopPropagation(); selectTravaux(t)"
+                >
+                  Détails
+                </button> -->
+              </div>
+            </div>
+
+            <div class="trav-mini">
+              <div class="mini-card">
+                <div class="mini-value">{{ t.localisation || '—' }}</div>
+              </div>
+
+              <div class="mini-card">
+                <div class="mini-value">
+                  {{ t.created_at ? (t.created_at | date: 'dd/MM/yyyy') : '—' }}
+                </div>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- ton modal inchangé -->
+  @if (showModal) {
+    <div class="custom-modal" (click)="showModal = false">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-content-head">
+          <i class="fas fa-close" (click)="showModal = false"></i>
+        </div>
+
+        <div class="modal-content-body">
+          @for (travphoto of filteredPhotos; track $index; let i = $index) {
+            <div class="trav-photo" (click)="openGallery(i)">
+              <img class="trav-photo-img" [src]="apiUrl + travphoto.image" alt="" />
+              <span class="trav-photo-legend">{{ travphoto.legenda }}</span>
+            </div>
+          }
+
+          @if (showGallery) {
+            <app-gallery
+              [photos]="filteredPhotos"
+              [index]="currentIndex"
+              (close)="showGallery = false"
+            ></app-gallery>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

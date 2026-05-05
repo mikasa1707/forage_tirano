@@ -1,0 +1,83 @@
+<div class="container py-3">
+  <h2 class="mb-3">Messages clients</h2>
+
+  <!-- @if (loading) {
+    <div class="alert alert-info">Chargement...</div>
+  } -->
+
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
+
+  <div class="table-responsive">
+    <table class="table table-sm table-bordered align-middle">
+      <thead class="">
+        <tr>
+          <th>Date</th>
+          <th>Client</th>
+          <th>Message</th>
+          <th>Etat</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (contacts.length > 0) {
+          @for (contact of contacts; track contact.id) {
+            <tr [class.unread-row]="contact.status === 'nouveau'">
+              <td>{{ contact.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+
+              <td>
+                <div>
+                  <strong>{{ contact.nom }}</strong>
+                </div>
+                <div>{{ contact.email }}</div>
+                <div>{{ contact.telephone }}</div>
+                <div class="text-muted small">{{ contact.sujet }}</div>
+              </td>
+
+              <td class="message-cell">
+                {{ contact.message }}
+              </td>
+
+              <td>
+                <span
+                  class="badge"
+                  [class.bg-warning]="contact.status === 'nouveau'"
+                  [class.bg-primary]="contact.status === 'lu'"
+                  [class.bg-success]="contact.status === 'traite'"
+                >
+                  {{
+                    contact.status === 'nouveau'
+                      ? 'Nouveau'
+                      : contact.status === 'lu'
+                        ? 'Lu'
+                        : 'Traité'
+                  }}
+                </span>
+              </td>
+
+              <td>
+                @if (contact.status === 'nouveau') {
+                  <p (click)="markAsRead(contact.id)">
+                    <i class="fa-regular fa-message"></i>
+                  </p>
+                } @else {
+                  <p
+                    (click)="markAsUnread(contact.id)"
+                  >
+                    <i class="fa-solid fa-message"></i>
+                </p>
+                }
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td colspan="5" class="text-center py-4">Aucun message</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

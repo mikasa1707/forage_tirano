@@ -1,0 +1,31 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="right-panel">
+      <h1>BIENVENUE</h1>
+
+      <form class="login-form" (ngSubmit)="login()">
+        <div class="field">
+          <label>Nom d'utilisateur</label>
+          <div class="input-icon">
+            <span class="icon">👤</span>
+            <input [(ngModel)]="username" name="username" type="text" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Mot de passe</label>
+          <div class="input-icon">
+            <span class="icon">🔒</span>
+            <input [(ngModel)]="password" name="password" type="password" />
+          </div>
+        </div>
+
+        <!-- <div class="forgot">
+          <a href="#">Forgot Password?</a>
+        </div> -->
+
+        <button type="submit">SE CONNECTER</button>
+      </form>
+    </div>
+  </div>
+</div>

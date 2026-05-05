@@ -1,0 +1,45 @@
+@if (selectedService) {
+  <div class="carousel-service">
+    <div class="list-service">
+      <div class="item-service">
+        <img
+          [src]="getImageUrl(selectedService.image)"
+          alt=""
+          class="main-img"
+          [class.animate]="animate"
+        />
+
+        <div class="content-service mt-3" [class.animate]="animate">
+          <div class="title-service permanent-marker-regular">
+            {{ selectedService.titre }}
+          </div>
+
+          <div class="description-service">
+            {{ selectedService.description }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="thumbnail" #thumbconteiner>
+      @for (service of services; track $index; let i = $index) {
+        <div
+          class="item p-1"
+          (click)="selectService(service, i)"
+          [class.active]="service === selectedService"
+        >
+          <img
+            [src]="getImageUrl(service.image)"
+            alt=""
+            class="rounded"
+            width="120"
+            height="80"
+            style="object-fit: cover"
+          />
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="p-4 text-center text-muted">Chargement...</div>
+}

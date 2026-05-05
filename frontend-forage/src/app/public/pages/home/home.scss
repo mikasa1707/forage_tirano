@@ -1,0 +1,71 @@
+// @keyframes gradientBG {
+//   0% { background-position: 0% 50%; }
+//   50% { background-position: 100% 50%; }
+//   100% { background-position: 0% 50%; }
+// }
+
+// body {
+//   background: linear-gradient(0deg, #020c1f, #0b1933, #0e1a31, #041a44);
+//   // background:  radial-gradient(#03235e, #021f55, #0b3788, #041a44);
+//   background-size: 400% 400%;
+//   animation: gradientBG 10s ease infinite;
+//   width: 100vw;
+//   height: 100vh;
+//   color: #fff;
+//   // backdrop-filter: blur(5px);
+// }
+// animated-background.component.scss
+.permanent-marker-regular {
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 2px;
+}
+
+
+.animated-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  background: transparent;
+  background-size: 400% 400%;
+  animation: gradient-morph 15s ease infinite;
+}
+
+.mouse-circle {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  pointer-events: none; // pour ne pas gêner le curseur
+  border-radius: 50%;
+  background: radial-gradient(circle, #022f3db3, #041b364d, #041b364d, #041b364d, #041b364d);
+  filter: blur(50px);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.8s ease;
+  opacity: 0;
+}
+
+@keyframes gradient-morph {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+section {
+  width: 100%;
+  height: 100vh;
+  overflow-y: hidden;
+  background: transparent;
+}
+section#travaux {
+  width: 100%;
+  height: auto !important;
+  overflow-y: hidden;
+  background: transparent;
+}
+
+

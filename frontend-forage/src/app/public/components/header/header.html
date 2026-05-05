@@ -1,0 +1,21 @@
+<div class="header">
+  <div class="header-content" [class.open]="menuOpen">
+
+    <!-- BOUTON MENU (visible en responsive) -->
+    <div class="menu-btn" (click)="toggleMenu()">
+      <span [class.open]="menuOpen"></span>
+      <span [class.open]="menuOpen"></span>
+      <span [class.open]="menuOpen"></span>
+    </div>
+
+    <nav [class.open]="menuOpen">
+        <a href="#">Accueil</a>
+        <a href="#service">Services</a>
+        <a href="#travaux">Travaux</a>
+        <a href="#equipes">Équipes</a>
+        <a href="#contact">Contact</a>
+        <span></span>
+    </nav>
+
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="animated-background" (mousemove)="onMouseMove($event)">
+  <div
+    class="mouse-circle"
+    [ngStyle]="{
+      left: circleX + 'px',
+      top: circleY + 'px',
+      opacity: circleVisible ? 1 : 0
+    }"
+  ></div>
+</div>
+<app-header></app-header>
+<section id="hero">
+  <app-hero></app-hero>
+</section>
+<section id="service">
+  <app-services></app-services>
+</section>
+<section id="travaux">
+  <app-travaux></app-travaux>
+</section>
+<section id="equipes">
+  <app-equipes></app-equipes>
+</section>
+<section id="contact">
+  <app-contact></app-contact>
+</section>
+<!-- <section id="footer">
+  <app-footer></app-footer>
+</section> -->

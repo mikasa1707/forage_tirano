@@ -1,0 +1,113 @@
+.conteiner {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  padding: 10px;
+  display: flex;
+
+  /* Image de fond + overlay semi-transparent */
+  background: url('/images/fond.jpg') center/cover no-repeat fixed;
+
+  /* Overlay blanc semi-transparent pour le blur */
+  /* On peut utiliser un pseudo-élément pour gérer le blur */
+}
+.conteiner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00000096; /* voile transparent */
+  backdrop-filter: blur(5px); /* flou */
+  -webkit-backdrop-filter: blur(5px); /* Safari */
+  pointer-events: none; /* ne bloque pas la souris */
+  z-index: 0;
+}
+
+.banner{
+    margin-top: 10vh;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+.banner .slider{
+    position: absolute;
+    width: 200px;
+    height: 250px;
+    top: 10%;
+    left: calc(50% - 100px);
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    animation: autoRun 20s linear infinite;
+    z-index: 2;
+}
+@keyframes autoRun{
+    from{
+        transform: perspective(1200px) rotateX(-10deg) rotateY(0deg);
+    }to{
+        transform: perspective(1200px) rotateX(-10deg) rotateY(360deg);
+    }
+}
+
+.banner .slider .item{
+    color: #fff;
+    position: absolute;
+    inset: 0 0 0 0;
+    transform: 
+        rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+        translateZ(550px);
+}
+.banner .slider .item img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+
+@media screen and (max-width: 1023px) {
+    .banner .slider{
+        width: 160px;
+        height: 200px;
+        left: calc(50% - 80px);
+    }
+    .banner .slider .item{
+        transform: 
+            rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+            translateZ(300px);
+    }
+    .banner .content h1{
+        text-align: center;
+        width: 100%;
+        text-shadow: 0 10px 20px #000;
+        font-size: 7em;
+    }
+    .banner .content .author{
+        color: #fff;
+        padding: 20px;
+        text-shadow: 0 10px 20px #000;
+        z-index: 2;
+        max-width: unset;
+        width: 100%;
+        text-align: center;
+        padding: 0 30px;
+    }
+}
+@media screen and (max-width: 767px) {
+    .banner .slider{
+        width: 100px;
+        height: 150px;
+        left: calc(50% - 50px);
+    }
+    .banner .slider .item{
+        transform: 
+            rotateY(calc( (var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+            translateZ(180px);
+    }
+    .banner .content h1{
+        font-size: 5em;
+    }
+}

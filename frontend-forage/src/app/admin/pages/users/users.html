@@ -1,0 +1,118 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Gestion des utilisateurs</h1>
+      <p class="subtitle">Crée, consulte et supprime les comptes utilisateurs.</p>
+    </div>
+
+    <button class="add-btn" type="button" (click)="openModal()">
+      <i class="fa fa-plus"></i>
+      Ajouter utilisateur
+    </button>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (isOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="custom-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h2>Créer un utilisateur</h2>
+            <p>Remplis les informations ci-dessous.</p>
+          </div>
+          <button class="close-btn" type="button" (click)="closeModal()">✖</button>
+        </div>
+
+        <form (ngSubmit)="createUser()" class="form">
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input
+              id="username"
+              type="text"
+              [(ngModel)]="form.username"
+              name="username"
+              placeholder="Ex: mika.admin"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="form.password"
+              name="password"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="role">Rôle</label>
+            <select id="role" [(ngModel)]="form.role" name="role">
+              <option value="admin">Admin</option>
+              <option value="editor">Editor</option>
+              <option value="user">User</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-sm btn-danger" (click)="closeModal()">Annuler</button>
+            <button type="submit" class="btn btn-sm btn-primary">Créer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (users.length > 0) {
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Rôle</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of (users$ | async) || []; track user.id) {
+              <tr>
+                <td class="id-cell">{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>
+                  <span class="role-badge" [class.admin]="user.role === 'admin'"
+                    [class.editor]="user.role === 'editor'"
+                    [class.user]="user.role === 'user'">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-sm danger"
+                    (click)="deleteUser(user.id)"
+                    title="Supprimer"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <i class="fa fa-users"></i>
+      <p>Aucun utilisateur pour le moment.</p>
+    </div>
+  }
+</div>

@@ -1,0 +1,77 @@
+<div class="conteiner">
+  <div class="carte">
+    <h1>Contactez-nous</h1>
+    <h3>au <span>0340012011</span></h3>
+
+    <form [formGroup]="form" (ngSubmit)="send()">
+      <div class="mb-3">
+        <label class="form-label">Nom</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Votre nom"
+          formControlName="nom"
+        />
+        @if (form.get('nom')?.touched && form.get('nom')?.invalid) {
+          <small class="text-danger">Le nom est obligatoire</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Téléphone</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="0340012011"
+          formControlName="telephone"
+        />
+        @if (form.get('telephone')?.touched && form.get('telephone')?.invalid) {
+          <small class="text-danger">Le téléphone est obligatoire</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          placeholder="mail@exemple.com"
+          formControlName="email"
+        />
+        @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+          <small class="text-danger">L'email est obligatoire</small>
+        }
+        @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+          <small class="text-danger">Email invalide</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Votre message</label>
+        <textarea
+          class="form-control"
+          rows="4"
+          formControlName="message"
+        ></textarea>
+        @if (form.get('message')?.touched && form.get('message')?.hasError('required')) {
+          <small class="text-danger">Le message est obligatoire</small>
+        }
+        @if (form.get('message')?.touched && form.get('message')?.hasError('minlength')) {
+          <small class="text-danger">Message trop court</small>
+        }
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="sending">
+        {{ sending ? 'Envoi...' : 'Envoyer' }}
+      </button>
+
+      @if (sent) {
+        <div class="alert alert-success mt-3">Message envoyé ✅</div>
+      }
+
+      @if (errorMsg) {
+        <div class="alert alert-danger mt-3">{{ errorMsg }}</div>
+      }
+    </form>
+  </div>
+</div>

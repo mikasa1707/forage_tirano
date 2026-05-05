@@ -1,0 +1,68 @@
+.permanent-marker-regular {
+  font-family: 'Permanent Marker', cursive;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 1px;
+}
+.conteiner {
+  height: auto;
+  overflow: hidden;
+  position: relative;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  /* Image de fond + overlay semi-transparent */
+  background: url('/images/fond.jpg') center/cover no-repeat fixed;
+
+  /* Overlay blanc semi-transparent pour le blur */
+  /* On peut utiliser un pseudo-élément pour gérer le blur */
+}
+.conteiner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00000096; /* voile transparent */
+  backdrop-filter: blur(5px); /* flou */
+  -webkit-backdrop-filter: blur(5px); /* Safari */
+  pointer-events: none; /* ne bloque pas la souris */
+  z-index: 0;
+}
+
+.carte {
+  width: 30vw;
+  height: 60vh;
+  border: #ffffff11 1px solid;
+  border-radius: 0.5rem;
+  position: relative;
+  box-shadow: #fff 0 0 5px;
+  backdrop-filter: blur(10px);
+  background: #ffffff28;
+  margin: 20vh auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+
+  h1 {
+    margin: 10px auto;
+  }
+  h3 {
+    margin: 10px auto;
+  }
+  textarea {
+    resize: none;
+    height: 285px;
+  }
+}
+
+@media (max-width: 998px) {
+  .carte {
+    width: 90vw;
+    height: 80vh;
+//   margin: 5vh auto;
+margin-top: 10px;
+  }
+}

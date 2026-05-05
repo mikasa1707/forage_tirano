@@ -1,0 +1,13 @@
+<div class="conteiner">
+  <div class="banner">
+    <div class="slider" style="--quantity: {{ equipes.length }}">
+      @for (equipe of equipes; track $index; let i = $index) {
+      <div class="item" style="--position: {{ i + 1 }}">
+        <img [src]="equipe.photo ? apiUrl + equipe.photo : '/images/user.svg'" alt="" />
+        <h3>{{ equipe.nom }}</h3>
+        <p>{{ equipe.description }}</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>
