@@ -8,18 +8,19 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string) {
     const user = await this.usersService.findByUsername(username);
 
-    if (!user) {
+    if (!user?.password) {
       throw new UnauthorizedException('Identifiants invalides');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Mdp invalides');
+      throw new UnauthorizedException('Identifiants invalides');
     }
 
     return user;
