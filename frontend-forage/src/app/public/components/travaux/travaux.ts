@@ -47,7 +47,6 @@ export class Travaux implements OnInit {
 
         if (this.travaux.length) {
           this.selectedTravaux = this.travaux[0];
-          console.log(this.selectedTravaux);
           this.filteredPhotos = this.travaux[0].photos ?? [];
         }
 
@@ -66,7 +65,6 @@ export class Travaux implements OnInit {
   selectTravaux(travaux: TravauxModel) {
     this.selectedTravaux = travaux;
     this.filteredPhotos = travaux.photos ?? [];
-    console.log(this.filteredPhotos);
     this.showModal = true;
   }
 
@@ -91,7 +89,6 @@ export class Travaux implements OnInit {
 
   onImgLoad(ev: Event) {
     const img = ev.target as HTMLImageElement;
-    console.log(img)
     img.classList.remove('is-broken'); // ✅ important après un swap
   }
 

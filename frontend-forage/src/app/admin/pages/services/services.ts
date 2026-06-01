@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ServiceItem, ServicesApiService } from '../../../services/services.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-services',
@@ -22,33 +23,36 @@ export class Services implements OnInit {
 
   selectedFile: File | null = null;
   previewUrl: string | null = null;
+  apiUrl = environment.api;
+
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   constructor(
     private api: ServicesApiService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.load();
   }
 
-  load() {
-    this.api.getAll().subscribe((res) => (this.services = res));
+  ngOnDestroy() {
+    if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
+  }
 
+  load() {
     this.api.getAll().subscribe({
       next: (data) => {
         this.services = [...data];
         this.cdr.markForCheck();
 
         const set = new Set(
-          this.services
+          data
             .map((s) => (s.titre ?? '').trim())
             .filter(Boolean)
-            .map((t) => t.toLowerCase()),
         );
 
-        // on garde l’écriture “d’origine” la + récente
-        this.titles = Array.from(set).sort();
+        this.titles = Array.from(set);
       },
       error: (err) => console.error(err),
     });
@@ -56,17 +60,24 @@ export class Services implements OnInit {
 
   onTitreInput() {
     const q = (this.newService.titre ?? '').trim().toLowerCase();
+
     if (!q) {
       this.filteredTitles = [];
       this.showSuggestions = false;
       return;
     }
 
+    const seen = new Set<string>();
+
     this.filteredTitles = this.services
-      .map((s) => (s.titre ?? '').trim())
+      .map(s => (s.titre ?? '').trim())
       .filter(Boolean)
-      .filter((t) => t.toLowerCase().includes(q))
-      .filter((t, i, arr) => arr.findIndex((x) => x.toLowerCase() === t.toLowerCase()) === i)
+      .filter(t => {
+        const key = t.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return key.includes(q);
+      })
       .slice(0, 8);
 
     this.showSuggestions = this.filteredTitles.length > 0;
@@ -78,7 +89,9 @@ export class Services implements OnInit {
   }
 
   hideLater() {
-    setTimeout(() => (this.showSuggestions = false), 150);
+    setTimeout(() => {
+      this.showSuggestions = false;
+    }, 200);
   }
 
   onFileSelected(e: Event) {
@@ -92,37 +105,97 @@ export class Services implements OnInit {
   }
 
   create() {
-    if (!this.newService.titre || !this.newService.description) return;
+    const titre = this.newService.titre?.trim();
+    const description = this.newService.description?.trim();
+
+    if (!titre || !description) return;
 
     const fd = new FormData();
-    fd.append('titre', this.newService.titre);
-    fd.append('description', this.newService.description);
+    fd.append('titre', titre);
+    fd.append('description', description);
     fd.append('is_active', '1');
 
-    // ✅ le nom DOIT être "image" (comme dans FileInterceptor('image', ...))
-    if (this.selectedFile) fd.append('image', this.selectedFile);
+    if (this.selectedFile) {
+      fd.append('image', this.selectedFile);
+    }
 
-    this.api.createForm(fd).subscribe(() => {
-      this.newService = { titre: '', description: '' };
-      this.selectedFile = null;
-      if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
-      this.previewUrl = null;
-      this.load();
+    this.api.createForm(fd).subscribe({
+      next: () => {
+        this.newService = { titre: '', description: '' };
+        this.selectedFile = null;
+
+        if (this.previewUrl) {
+          URL.revokeObjectURL(this.previewUrl);
+          this.previewUrl = null;
+        }
+
+        this.load();
+      },
+      error: (err) => console.error(err),
     });
+  }
+
+  edit(service: ServiceItem) {
+    this.newService = {
+      id: service.id,
+      titre: service.titre,
+      description: service.description,
+      image: service.image
+    };
+    this.previewUrl = (this.apiUrl + service.image);
   }
 
   toggle(service: ServiceItem) {
     const newState = service.is_active ? 0 : 1;
-    this.api.toggleActive(service.id, newState).subscribe(() => {
-      service.is_active = newState;
+
+    // 🔥 update optimiste AVANT Angular check
+    service.is_active = newState;
+
+    this.api.toggleActive(service.id, newState).subscribe({
+      error: () => {
+        // rollback si erreur
+        service.is_active = newState ? 0 : 1;
+      },
     });
   }
-
   remove(id: number) {
     if (!confirm('Supprimer ce service ?')) return;
 
     this.api.delete(id).subscribe(() => {
       this.services = this.services.filter((s) => s.id !== id);
+      this.load();
     });
+  }
+
+  update(id: number, service: any, file?: File) {
+
+    this.api.update(id, service, this.selectedFile ?? undefined).subscribe({
+      next: () => {
+        this.load();
+        this.resetForm();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  save() {
+    if (this.newService.id) {
+      this.update(this.newService.id, this.newService, this.selectedFile ?? undefined);
+    } else {
+      this.create();
+    }
+  }
+
+  resetForm() {
+    this.newService = { titre: '', description: '', id: undefined };
+    this.selectedFile = null;
+    this.previewUrl = null;
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  cancel() {
+    this.newService = {};
   }
 }

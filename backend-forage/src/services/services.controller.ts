@@ -18,7 +18,7 @@ import { servicesMulterConfig } from '../upload/multer.config';
 
 @Controller('services')
 export class ServicesController {
-  constructor(private readonly services: ServicesService) {}
+  constructor(private readonly services: ServicesService) { }
 
   // ✅ PUBLIC
   @Get()
@@ -59,6 +59,7 @@ export class ServicesController {
     if (file) {
       dto.image = `/uploads/services/${file.filename}`;
     }
+
     return this.services.update(id, dto);
   }
 

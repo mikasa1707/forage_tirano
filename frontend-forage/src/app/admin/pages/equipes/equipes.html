@@ -1,109 +1,113 @@
-<div class="container">
-  <button class="btn btn-primary mt-2" (click)="addNew()">Ajouter</button>
-  <div class="row position-relative">
-    <!-- Table des équipes -->
-    @if (loading) {
-      <div>Chargement...</div>
-    }
-    <div
-      class="col-12 p-3"
-      style="overflow-y: scroll; overflow-x: hidden; height: 700px; max-height: 700px"
-    >
-      @if (!loading) {
-        <table class="table table-sm table-hover w-100 m-3">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Fonction</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (equipe of (equipes$ | async) || []; track equipe.id) {
-              <tr [class.table-active]="(selectedEquipe?.id ?? null) === equipe.id">
-                <td class="p-2" (click)="selectEquipe(equipe, $event)">{{ equipe.nom }}</td>
-                <td class="p-2" (click)="selectEquipe(equipe, $event)">{{ equipe.description }}</td>
-                <td class="p-2">
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-danger"
-                    (click)="delete(equipe.id || 0)"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      }
-    </div>
+<div class="toolbar">
+  <h2>Gestion des equipes</h2>
+  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addNew()">
+    <i class="fa fa-plus"></i>
+  </button>
+</div>
 
-    <!-- Formulaire -->
-    @if (selectedEquipe) {
-      <div class="drawer-backdrop" (click)="closeDrawer()"></div>
-
-      <div class="drawer">
-        <div class="card h-100 border-0">
-          <!-- HEADER -->
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <strong>Profil</strong>
-            <button class="btn-close" (click)="closeDrawer()"></button>
-          </div>
-
-          <!-- BODY -->
-          <div class="card-body text-center">
-            <!-- PHOTO -->
-            <div class="profile-photo mb-3">
-              <img
-                [src]="photoPreviewUrl || 'images/user.svg'"
-                class="rounded-circle"
-                alt="Photo"
-              />
-
-              @if (isAdmin || isEditMode) {
-                <input type="file" class="form-control mt-2" (change)="onFileChange($event)" />
-              }
-            </div>
-
-            <!-- INFOS -->
-            <form [formGroup]="form" (ngSubmit)="save()" class="text-start">
-              <div class="mb-3">
-                <label>Nom & Prénom</label>
-                <input class="form-control" formControlName="nom" [readonly]="!isEditMode" />
-              </div>
-
-              <div class="mb-3">
-                <label>Fonction</label>
-                <input
-                  class="form-control"
-                  formControlName="description"
-                  [readonly]="!isEditMode"
-                />
-              </div>
-
-              <!-- BOUTONS -->
-              <div class="d-flex justify-content-between mt-4">
-                <div>
-                  @if (!isEditMode) {
-                    <button type="button" class="btn btn-primary me-2" (click)="enableEdit()">
-                      Modifier
-                    </button>
-                  }
-                  @if (isEditMode) {
-                    <button type="submit" class="btn btn-success me-2">Enregistrer</button>
-                    <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
-                      Annuler
-                    </button>
-                  }
-                </div>
-
-                @if (isAdmin) {}
-              </div>
-            </form>
+<div class="row position-relative">
+  <!-- Table des équipes -->
+  @if (loading) {
+    <div>Chargement...</div>
+  }
+  <div
+    class="col-12 p-3"
+    style="overflow-y: scroll; overflow-x: hidden; height: 700px; max-height: 700px"
+  >
+    @if (!loading) {
+      <div class="card d-flex w-100">
+        <div class="card-body">
+          <div class="table-responsive modern-table">
+            <table class="table table-sm table-hover w-100">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Fonction</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (equipe of (equipes$ | async) || []; track equipe.id) {
+                  <tr [class.table-active]="(selectedEquipe?.id ?? null) === equipe.id">
+                    <td class="p-2" (click)="selectEquipe(equipe, $event)">{{ equipe.nom }}</td>
+                    <td class="p-2" (click)="selectEquipe(equipe, $event)">
+                      {{ equipe.description }}
+                    </td>
+                    <td class="p-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger border-0r"
+                        (click)="delete(equipe.id || 0)"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     }
   </div>
+
+  <!-- Formulaire -->
+  @if (selectedEquipe) {
+    <div class="drawer-backdrop" (click)="closeDrawer()"></div>
+
+    <div class="drawer">
+      <div class="card h-100 border-0">
+        <!-- HEADER -->
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>Profil</strong>
+          <button class="btn-close" (click)="closeDrawer()"></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body text-center">
+          <!-- PHOTO -->
+          <div class="profile-photo mb-3">
+            <img [src]="photoPreviewUrl || 'images/user.svg'" class="rounded-circle" alt="Photo" />
+
+            @if (isAdmin || isEditMode) {
+              <input type="file" class="form-control mt-2" (change)="onFileChange($event)" />
+            }
+          </div>
+
+          <!-- INFOS -->
+          <form [formGroup]="form" (ngSubmit)="save()" class="text-start">
+            <div class="mb-3">
+              <label>Nom & Prénom</label>
+              <input class="form-control" formControlName="nom" [readonly]="!isEditMode" />
+            </div>
+
+            <div class="mb-3">
+              <label>Fonction</label>
+              <input class="form-control" formControlName="description" [readonly]="!isEditMode" />
+            </div>
+
+            <!-- BOUTONS -->
+            <div class="d-flex justify-content-between mt-4">
+              <div>
+                @if (!isEditMode) {
+                  <button type="button" class="btn btn-primary me-2" (click)="enableEdit()">
+                    Modifier
+                  </button>
+                }
+                @if (isEditMode) {
+                  <button type="submit" class="btn btn-success me-2">Enregistrer</button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
+                    Annuler
+                  </button>
+                }
+              </div>
+
+              @if (isAdmin) {}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
 </div>

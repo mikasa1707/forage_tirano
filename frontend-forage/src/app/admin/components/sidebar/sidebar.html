@@ -1,33 +1,37 @@
-<div class="sidebar">
-  <div class="logo permanent-marker-regular">Ti Rano</div>
+<div class="sidebar d-flex flex-column">
 
-  <nav class="menu">
-    <!-- <a routerLink="/admin/dashboard" routerLinkActive="active">
-      <i class="fas fa-home"></i> <span>Dashboard</span>
-    </a> -->
+  <!-- LOGO -->
+  <div class="logo permanent-marker-regular text-center py-3 mb-3">
+    Ti Rano
+  </div>
 
-    <!-- <a routerLink="/admin/users" routerLinkActive="active">
-      <i class="fas fa-user"></i> <span>Users</span>
-    </a> -->
+  <!-- MENU -->
+  <nav class="menu d-flex flex-column gap-1 px-2">
 
-    <a routerLink="/admin/equipes" routerLinkActive="active">
-      <i class="fas fa-users"></i> <span>Équipes</span>
+    <a routerLink="/admin/equipes" routerLinkActive="active" class="menu-item">
+      <i class="fas fa-users"></i>
+      <span>Équipes</span>
     </a>
 
-    <a routerLink="/admin/services" routerLinkActive="active">
-      <i class="fas fa-tools"></i> <span>Services</span>
+    <a routerLink="/admin/services" routerLinkActive="active" class="menu-item">
+      <i class="fas fa-tools"></i>
+      <span>Services</span>
     </a>
 
-    <a routerLink="/admin/travaux" routerLinkActive="active">
-      <i class="fas fa-tasks"></i> <span>Travaux</span>
+    <a routerLink="/admin/travaux" routerLinkActive="active" class="menu-item">
+      <i class="fas fa-tasks"></i>
+      <span>Travaux</span>
     </a>
 
-    <a routerLink="/admin/contact" routerLinkActive="active">
-      <i class="fas fa-envelope"></i> <span>Contact</span>
+    <a routerLink="/admin/contact" routerLinkActive="active" class="menu-item">
+      <i class="fas fa-envelope"></i>
+      <span>Contact</span>
     </a>
 
-    <a routerLink="/admin/users" routerLinkActive="active">
-      <i class="fas fa-users"></i> <span>Utilisateurs</span>
+    <a routerLink="/admin/users" routerLinkActive="active" class="menu-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Utilisateurs</span>
     </a>
+
   </nav>
 </div>

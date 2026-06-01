@@ -4,10 +4,8 @@
       <h1>Gestion des utilisateurs</h1>
       <p class="subtitle">Crée, consulte et supprime les comptes utilisateurs.</p>
     </div>
-
-    <button class="add-btn" type="button" (click)="openModal()">
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openModal()">
       <i class="fa fa-plus"></i>
-      Ajouter utilisateur
     </button>
   </div>
 
@@ -61,7 +59,9 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-sm btn-danger" (click)="closeModal()">Annuler</button>
+            <button type="button" class="btn btn-sm btn-danger" (click)="closeModal()">
+              Annuler
+            </button>
             <button type="submit" class="btn btn-sm btn-primary">Créer</button>
           </div>
         </form>
@@ -70,43 +70,48 @@
   }
 
   @if (users.length > 0) {
-    <div class="table-card">
-      <div class="table-wrapper">
-        <table class="table table-sm table-hover">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>Rôle</th>
-              <th class="actions-col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (user of (users$ | async) || []; track user.id) {
+    <div class="card d-flex w-100">
+      <div class="card-body">
+        <div class="table-responsive modern-table">
+          <table class="table table-sm table-hover w-100">
+            <thead>
               <tr>
-                <td class="id-cell">{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>
-                  <span class="role-badge" [class.admin]="user.role === 'admin'"
-                    [class.editor]="user.role === 'editor'"
-                    [class.user]="user.role === 'user'">
-                    {{ user.role }}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    class="btn btn-sm danger"
-                    (click)="deleteUser(user.id)"
-                    title="Supprimer"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Rôle</th>
+                <th class="actions-col">Actions</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (user of (users$ | async) || []; track user.id) {
+                <tr>
+                  <td class="id-cell">{{ user.id }}</td>
+                  <td>{{ user.username }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [class.bg-primary]="user.role === 'admin'"
+                      [class.bg-warning]="user.role === 'editor'"
+                      [class.bg-info]="user.role === 'user'"
+                    >
+                      {{ user.role }}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger border-0"
+                      (click)="deleteUser(user.id)"
+                      title="Supprimer"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   } @else {

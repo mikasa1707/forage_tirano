@@ -6,9 +6,9 @@ import { FileFilterCallback } from 'multer';
 export const imageFileFilter = (
   req: Request,
   file: Express.Multer.File,
-  cb: FileFilterCallback,
+  cb: (error: Error | null, acceptFile: boolean) => void,
 ) => {
-  if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+  if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif)$/)) {
     return cb(null, false);
   }
   cb(null, true);

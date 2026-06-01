@@ -23,8 +23,7 @@ export class Equipes implements OnInit {
   ngOnInit(): void {
     this.equipesService.list().subscribe((data: Equipe[]) => {
       this.equipes = data;
-      this.cdr.detectChanges(); // Force la détection des changements
-      console.log(this.equipes);
+      this.cdr.detectChanges();
     });
   }
 }

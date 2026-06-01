@@ -9,8 +9,6 @@
   overflow: hidden;
   position: relative;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
   /* Image de fond + overlay semi-transparent */
   background: url('/images/fond.jpg') center/cover no-repeat fixed;
 
@@ -64,5 +62,20 @@
     height: 80vh;
 //   margin: 5vh auto;
 margin-top: 10px;
+  }
+}
+
+.alert {
+  animation: slideIn 0.25s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

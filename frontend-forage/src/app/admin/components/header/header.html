@@ -1,9 +1,29 @@
 <header class="header">
-  <div class="burger" (click)="toggleMenu.emit()"><span></span><span></span><span></span></div>
+
+  <div class="burger" (click)="toggleMenu.emit()">
+    <span></span><span></span><span></span>
+  </div>
 
   <div class="title">Admin Panel</div>
 
-  <button class="theme-toggle" (click)="toggleTheme.emit()">
-    <i class="fas fa-sun"></i> / <i class="fas fa-moon"></i>
-  </button>
+  <!-- RIGHT ACTIONS -->
+  <div class="actions d-flex align-items-center gap-3">
+
+    <!-- MESSAGES -->
+    <div class="position-relative message-icon">
+      <i class="fas fa-envelope fa-lg" (click)="goToMessages()"></i>
+
+      @if (unreadMessagesCount > 0) {
+        <span class="badge-notif" (click)="goToMessages()">
+          {{ unreadMessagesCount }}
+        </span>
+      }
+    </div>
+
+    <!-- THEME -->
+    <button class="theme-toggle" (click)="toggleTheme.emit()">
+      <i class="fas fa-sun"></i> / <i class="fas fa-moon"></i>
+    </button>
+
+  </div>
 </header>

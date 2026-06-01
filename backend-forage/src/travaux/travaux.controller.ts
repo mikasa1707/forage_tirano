@@ -48,8 +48,6 @@ export class TravauxController {
     @Body() dto: UpdateTravauxDto,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    console.log('LEGENDS DTO =', dto);
-    console.log('FILES =', files?.length);
 
     return this.service.update(id, dto, files ?? []);
   }

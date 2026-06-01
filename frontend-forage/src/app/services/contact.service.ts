@@ -33,4 +33,8 @@ export class ContactService {
   markAsUnread(id: number): Observable<ContactMessage> {
     return this.http.patch<ContactMessage>(`${this.apiUrl}/${id}/unread`, {});
   }
+
+  markAsTreat(id: number): Observable<ContactMessage> {
+    return this.http.patch<ContactMessage>(`${this.apiUrl}/${id}/traitee`, {});
+  }
 }

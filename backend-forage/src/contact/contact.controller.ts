@@ -10,10 +10,11 @@ import {
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
+import { WebSocketGateway } from '@nestjs/websockets';
 
 @Controller('contact')
 export class ContactController {
-  constructor(private readonly svc: ContactService) {}
+  constructor(private readonly svc: ContactService) { }
 
   @Post()
   create(@Body() body: CreateContactDto) {
@@ -23,6 +24,11 @@ export class ContactController {
   @Get()
   findAll() {
     return this.svc.findAll();
+  }
+
+  @Get('unread-count')
+  getUnreadCount() {
+    return this.svc.count();
   }
 
   @Get(':id')
@@ -40,8 +46,14 @@ export class ContactController {
     return this.svc.markAsUnread(id);
   }
 
+  @Patch(':id/traitee')
+  markAsTreat(@Param('id', ParseIntPipe) id: number) {
+    return this.svc.markAsTreat(id);
+  }
+
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.svc.remove(id);
   }
+
 }

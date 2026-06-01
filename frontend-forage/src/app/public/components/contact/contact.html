@@ -1,77 +1,110 @@
-<div class="conteiner">
-  <div class="carte">
-    <h1>Contactez-nous</h1>
-    <h3>au <span>0340012011</span></h3>
+<div class="conteiner py-5">
+  <div class="card shadow border-0 mx-auto" style="max-width: 600px; margin-top: 60px">
+    <div class="card-body p-4">
+      <h1>Contactez-nous</h1>
+      <h3>au <span>+261 34 00 120 11</span></h3>
+      <span>ou par message privee</span>
+      <form [formGroup]="form" (ngSubmit)="send()">
+        <div class="mb-1">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-control" placeholder="Votre nom" formControlName="nom" />
+          @if (form.get('nom')?.touched && form.get('nom')?.invalid) {
+            <small class="text-danger">Le nom est obligatoire</small>
+          }
+        </div>
 
-    <form [formGroup]="form" (ngSubmit)="send()">
-      <div class="mb-3">
-        <label class="form-label">Nom</label>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Votre nom"
-          formControlName="nom"
-        />
-        @if (form.get('nom')?.touched && form.get('nom')?.invalid) {
-          <small class="text-danger">Le nom est obligatoire</small>
+        <div class="mb-1">
+          <label class="form-label">Téléphone</label>
+
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="034 00 120 11"
+            formControlName="telephone"
+            autocomplete="off"
+            inputmode="tel"
+          />
+
+          @if (form.get('telephone')?.touched && form.get('telephone')?.invalid) {
+            <small class="text-danger">Le téléphone est obligatoire</small>
+          }
+        </div>
+
+        <div class="mb-1">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            placeholder="mail@exemple.com"
+            formControlName="email"
+          />
+          @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
+            <small class="text-danger">L'email est obligatoire</small>
+          }
+          @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+            <small class="text-danger">Email invalide</small>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Objet de votre demande</label>
+
+          <select class="form-select" formControlName="sujet" (change)="onSujetChange()">
+            <option value="">-- Sélectionnez un objet --</option>
+
+            @for (sujet of sujets; track sujet.value) {
+              <option [value]="sujet.value">
+                {{ sujet.label }}
+              </option>
+            }
+          </select>
+
+          @if (form.get('sujet')?.touched && form.get('sujet')?.invalid) {
+            <small class="text-danger"> Veuillez sélectionner un objet </small>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Votre message</label>
+          <textarea class="form-control" rows="4" formControlName="message"></textarea>
+          @if (
+            (form.get('nom')?.dirty || form.get('nom')?.touched) &&
+            form.get('nom')?.hasError('required')
+          ) {
+            <small class="text-danger">Le message est obligatoire</small>
+          }
+          @if (
+            (form.get('nom')?.dirty || form.get('nom')?.touched) &&
+            form.get('message')?.hasError('minlength')
+          ) {
+            <small class="text-danger">Message trop court</small>
+          }
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit" [disabled]="sending">
+          {{ sending ? 'Envoi...' : 'Envoyer' }}
+        </button>
+
+        @if (sent) {
+          <div class="alert alert-success shadow-sm rounded-4 px-3 py-2 mt-3 fade show">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fas fa-circle-check text-success"></i>
+              <strong>Succès :</strong>
+              <span>Message envoyé</span>
+            </div>
+          </div>
         }
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label">Téléphone</label>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="0340012011"
-          formControlName="telephone"
-        />
-        @if (form.get('telephone')?.touched && form.get('telephone')?.invalid) {
-          <small class="text-danger">Le téléphone est obligatoire</small>
+        @if (errorMsg) {
+          <div class="alert alert-danger shadow-sm rounded-4 px-3 py-2 mt-3 fade show">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fas fa-circle-xmark text-danger"></i>
+              <strong>Erreur :</strong>
+              <span>{{ errorMsg }}</span>
+            </div>
+          </div>
         }
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          placeholder="mail@exemple.com"
-          formControlName="email"
-        />
-        @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
-          <small class="text-danger">L'email est obligatoire</small>
-        }
-        @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
-          <small class="text-danger">Email invalide</small>
-        }
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Votre message</label>
-        <textarea
-          class="form-control"
-          rows="4"
-          formControlName="message"
-        ></textarea>
-        @if (form.get('message')?.touched && form.get('message')?.hasError('required')) {
-          <small class="text-danger">Le message est obligatoire</small>
-        }
-        @if (form.get('message')?.touched && form.get('message')?.hasError('minlength')) {
-          <small class="text-danger">Message trop court</small>
-        }
-      </div>
-
-      <button class="btn btn-primary" type="submit" [disabled]="sending">
-        {{ sending ? 'Envoi...' : 'Envoyer' }}
-      </button>
-
-      @if (sent) {
-        <div class="alert alert-success mt-3">Message envoyé ✅</div>
-      }
-
-      @if (errorMsg) {
-        <div class="alert alert-danger mt-3">{{ errorMsg }}</div>
-      }
-    </form>
+      </form>
+    </div>
   </div>
 </div>

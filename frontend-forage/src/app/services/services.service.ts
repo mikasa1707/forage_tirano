@@ -15,7 +15,7 @@ export interface ServiceItem {
 export class ServicesApiService {
   private _service = `${environment.api}/services`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // 🔓 PUBLIC
   getPublic(): Observable<ServiceItem[]> {
@@ -58,5 +58,19 @@ export class ServicesApiService {
 
   delete(id: number) {
     return this.http.delete(`${this._service}/${id}`);
+  }
+
+  update(id: number, data: Partial<ServiceItem>, file?: File) {
+    const fd = new FormData();
+
+    fd.append('titre', data.titre ?? '');
+    fd.append('description', data.description ?? '');
+    fd.append('is_active', '1');
+
+    if (file) {
+      fd.append('image', file);
+    }
+
+    return this.http.patch(`${this._service}/${id}`, fd);
   }
 }

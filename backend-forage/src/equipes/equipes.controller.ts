@@ -64,8 +64,6 @@ export class EquipesController {
   ): Promise<Equipe> {
     const data: Partial<Equipe> = { ...body };
 
-    console.log('FILE =>', file);
-
     if (file && !file.filename) {
       throw new BadRequestException(
         'Multer diskStorage not applied (filename undefined)',

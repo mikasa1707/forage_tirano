@@ -61,7 +61,15 @@ section {
   overflow-y: hidden;
   background: transparent;
 }
+
 section#travaux {
+  width: 100%;
+  height: auto !important;
+  overflow-y: hidden;
+  background: transparent;
+}
+
+section#contact {
   width: 100%;
   height: auto !important;
   overflow-y: hidden;

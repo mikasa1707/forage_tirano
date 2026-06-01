@@ -17,3 +17,34 @@
   font-size: 22px;
   cursor: pointer;
 }
+
+.message-icon {
+  cursor: pointer;
+  color: #fff;
+}
+
+.badge-notif {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #ef4444;
+  color: white;
+  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.badge-notif {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}

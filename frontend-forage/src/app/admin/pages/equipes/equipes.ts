@@ -50,7 +50,7 @@ export class Equipes implements OnInit {
       next: (data) => {
         this.equipes = data ?? [];
         this.equipes$ = this.equipesService.list();
-         this.cdr.markForCheck(); // ✅ déclenche un refresh pour OnPush
+        this.cdr.markForCheck(); // ✅ déclenche un refresh pour OnPush
         this.loading = false;
       },
       error: (err) => {
@@ -124,15 +124,12 @@ export class Equipes implements OnInit {
 
     this.selectedFile = input.files[0];
     this.form.patchValue({ photo: this.selectedFile.name });
-    console.log(this.selectedFile);
   }
 
   /* =======================
      SAUVEGARDE
      ======================= */
   save() {
-    console.log('submit clicked');
-    console.log(this.form);
     if (this.form.invalid) return;
 
     const formData = new FormData();
@@ -202,4 +199,6 @@ export class Equipes implements OnInit {
       this.loadEquipes();
     });
   }
+
+
 }
