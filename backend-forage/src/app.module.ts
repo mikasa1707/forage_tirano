@@ -46,7 +46,7 @@ import { Contact } from './contact/entities/contact.entity';
       type: 'mysql',
       url: process.env.DATABASE_URL,
       entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
-      synchronize: false,
+      synchronize: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
