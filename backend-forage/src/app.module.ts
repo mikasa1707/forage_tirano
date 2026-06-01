@@ -32,13 +32,19 @@ import { Contact } from './contact/entities/contact.entity';
     EquipesModule,
     ServicesModule,
     ContactModule,
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'root',
+    //   password: '',
+    //   database: 'forage',
+    //   entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
+    //   synchronize: false,
+    // }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'forage',
+      url: process.env.DATABASE_URL,
       entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
       synchronize: false,
     }),
@@ -51,4 +57,4 @@ import { Contact } from './contact/entities/contact.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
