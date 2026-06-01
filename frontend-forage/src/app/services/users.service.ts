@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'
 
 type AdminUser = {
   id: number;
@@ -16,7 +17,7 @@ type CreateUserPayload = {
 
 @Injectable({ providedIn: 'root' })
 export class UsersAdminService {
-  private readonly api = 'http://localhost:3000';
+  private readonly api = `${environment.api}`;
 
   constructor(private readonly http: HttpClient) {}
 
