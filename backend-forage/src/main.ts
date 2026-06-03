@@ -16,15 +16,12 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-  app.use('/uploads', (req, res, next) => {
-    console.log('UPLOAD HIT:', req.url);
-    next();
-  });
 
   // // ✅ rendre uploads accessible
   // app.useStaticAssets(join(__dirname, '..', 'uploads'), {
   //   prefix: '/uploads',
   // });
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   await app.listen(3000);
 }

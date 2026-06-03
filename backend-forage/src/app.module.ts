@@ -55,13 +55,13 @@ import { Contact } from './contact/entities/contact.entity';
     //     index: false, // 🔥 IMPORTANT
     //   },
     // }),
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/uploads',
-      serveStaticOptions: {
-        index: false,
-      },
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(process.cwd(), 'uploads'),
+    //   serveRoot: '/uploads',
+    //   serveStaticOptions: {
+    //     index: false,
+    //   },
+    // }),
     ContactModule,
   ],
   controllers: [AppController],
