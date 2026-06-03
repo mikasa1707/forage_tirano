@@ -51,6 +51,9 @@ import { Contact } from './contact/entities/contact.entity';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false, // 🔥 IMPORTANT
+      },
     }),
     ContactModule,
   ],
