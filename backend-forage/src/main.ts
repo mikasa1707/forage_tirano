@@ -4,8 +4,8 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  console.log('DB URL:', process.env.DATABASE_URL);
   const app = await NestFactory.create(AppModule);
+  console.log('DB URL:', process.env.DATABASE_URL);
 
   app.enableCors({
     origin: [
