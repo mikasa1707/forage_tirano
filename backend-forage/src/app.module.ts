@@ -48,8 +48,15 @@ import { Contact } from './contact/entities/contact.entity';
       entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
       synchronize: true,
     }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'),
+    //   serveRoot: '/uploads',
+    //   serveStaticOptions: {
+    //     index: false, // 🔥 IMPORTANT
+    //   },
+    // }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: '/app/uploads',
       serveRoot: '/uploads',
     }),
     ContactModule,
