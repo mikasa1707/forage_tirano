@@ -6,7 +6,7 @@ import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   console.log('Current working directory:', process.cwd());
-console.log('Uploads path:', join(process.cwd(), 'uploads'));
+  console.log('Uploads path:', join(process.cwd(), 'uploads'));
 
   app.enableCors({
     origin: [
@@ -15,6 +15,10 @@ console.log('Uploads path:', join(process.cwd(), 'uploads'));
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+  });
+  app.use('/uploads', (req, res, next) => {
+    console.log('UPLOAD HIT:', req.url);
+    next();
   });
 
   // // ✅ rendre uploads accessible
