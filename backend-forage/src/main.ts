@@ -5,7 +5,8 @@ import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  console.log('DB URL:', process.env.DATABASE_URL);
+  console.log('Current working directory:', process.cwd());
+console.log('Uploads path:', join(process.cwd(), 'uploads'));
 
   app.enableCors({
     origin: [
