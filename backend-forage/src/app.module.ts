@@ -56,8 +56,11 @@ import { Contact } from './contact/entities/contact.entity';
     //   },
     // }),
     ServeStaticModule.forRoot({
-      rootPath: '/app/uploads',
+      rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     ContactModule,
   ],
