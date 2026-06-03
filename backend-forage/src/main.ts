@@ -21,7 +21,7 @@ async function bootstrap() {
   // app.useStaticAssets(join(__dirname, '..', 'uploads'), {
   //   prefix: '/uploads',
   // });
-  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   await app.listen(3000);
 }
