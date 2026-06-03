@@ -15,7 +15,6 @@ async function bootstrap() {
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // // ✅ rendre uploads accessible
