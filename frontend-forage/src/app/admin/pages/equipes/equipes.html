@@ -23,6 +23,7 @@
                 <tr>
                   <th>Nom</th>
                   <th>Fonction</th>
+                  <th>Citation</th>
                   <th></th>
                 </tr>
               </thead>
@@ -30,6 +31,7 @@
                 @for (equipe of (equipes$ | async) || []; track equipe.id) {
                   <tr [class.table-active]="(selectedEquipe?.id ?? null) === equipe.id">
                     <td class="p-2" (click)="selectEquipe(equipe, $event)">{{ equipe.nom }}</td>
+                    <td class="p-2" (click)="selectEquipe(equipe, $event)">{{ equipe.poste }}</td>
                     <td class="p-2" (click)="selectEquipe(equipe, $event)">
                       {{ equipe.description }}
                     </td>
@@ -84,7 +86,30 @@
 
             <div class="mb-3">
               <label>Fonction</label>
-              <input class="form-control" formControlName="description" [readonly]="!isEditMode" />
+              <input
+                class="form-control"
+                formControlName="poste"
+                list="postes"
+                [readonly]="!isEditMode"
+              />
+
+              <datalist id="postes">
+                @for (poste of optionPoste; track poste) {
+                  <option [value]="poste"></option>
+                }
+              </datalist>
+            </div>
+
+            <div class="mb-3">
+              <label>Citation</label>
+              <textarea
+                name="citation"
+                id="citation"
+                class="form-control"
+                formControlName="description"
+                [readonly]="!isEditMode"
+                rows="4"
+              ></textarea>
             </div>
 
             <!-- BOUTONS -->

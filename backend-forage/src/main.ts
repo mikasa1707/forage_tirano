@@ -17,12 +17,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // // ✅ rendre uploads accessible
-  // app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-  //   prefix: '/uploads',
-  // });
-  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
-
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 void bootstrap();

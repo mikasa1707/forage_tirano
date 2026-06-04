@@ -22,9 +22,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.62);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: #00000096; /* voile transparent */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   pointer-events: none;
   z-index: 0;
 }

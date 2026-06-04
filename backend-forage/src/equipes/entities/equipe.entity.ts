@@ -7,13 +7,20 @@ import {
 @Entity('equipes')
 export class Equipe {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
+  
   @Column()
-  nom: string;
+  nom!: string;
+
   @Column({ type: 'text', nullable: true })
-  description: string;
+  poste!: string;
+
+  @Column({ type: 'text', nullable: true })
+  description!: string;
+
   @Column({ nullable: true })
-  photo: string;
+  photo!: string;
+
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 }

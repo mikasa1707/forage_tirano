@@ -19,6 +19,7 @@ export class Equipes implements OnInit {
   apiUrl = environment.api;
   photoPreviewUrl: string = '';
   loading = false;
+  optionPoste: any[] = [];
 
   form: FormGroup;
 
@@ -35,6 +36,7 @@ export class Equipes implements OnInit {
   ) {
     this.form = this.fb.group({
       nom: [{ value: '', disabled: true }, Validators.required],
+      poste: [{ value: '', disabled: true }],
       description: [{ value: '', disabled: true }],
       photo: [{ value: '', disabled: true }],
     });
@@ -50,6 +52,12 @@ export class Equipes implements OnInit {
       next: (data) => {
         this.equipes = data ?? [];
         this.equipes$ = this.equipesService.list();
+        this.optionPoste = [...new Set(
+          data
+            .map((item: any) => item.poste)
+            .filter((poste: string) => poste?.trim())
+        )]
+          .sort((a, b) => a.localeCompare(b));
         this.cdr.markForCheck(); // ✅ déclenche un refresh pour OnPush
         this.loading = false;
       },
@@ -73,7 +81,7 @@ export class Equipes implements OnInit {
 
     this.form.patchValue({
       nom: equipe.nom,
-      fonction: equipe.description, // ✅ si ton modèle a bien "fonction"
+      poste: equipe.poste, // ✅ si ton modèle a bien "fonction"
       description: equipe.description || '',
       // ❌ ne pas patcher "photo" (input file non patchable)
     });
@@ -104,7 +112,7 @@ export class Equipes implements OnInit {
     if (this.originalData) {
       this.form.patchValue({
         nom: this.originalData.nom,
-        fonction: this.originalData.fonction,
+        poste: this.originalData.poste,
         description: this.originalData.description || '',
         photo: this.apiUrl + this.originalData.photo || '',
       });
@@ -134,7 +142,7 @@ export class Equipes implements OnInit {
 
     const formData = new FormData();
     formData.append('nom', this.form.value.nom);
-    formData.append('fonction', this.form.value.fonction);
+    formData.append('poste', this.form.value.poste);
     formData.append('description', this.form.value.description || '');
 
     if (this.selectedFile) {

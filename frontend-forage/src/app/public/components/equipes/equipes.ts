@@ -15,15 +15,21 @@ export class Equipes implements OnInit {
   equipes: Equipe[] = [];
   apiUrl = environment.api;
 
+  selectedIndex = 0;
+
   constructor(
     private equipesService: EquipesService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.equipesService.list().subscribe((data: Equipe[]) => {
       this.equipes = data;
       this.cdr.detectChanges();
     });
+  }
+
+  selectPerson(index: number) {
+    this.selectedIndex = index;
   }
 }

@@ -1,4 +1,5 @@
 export class CreateEquipeDto {
-  nom: string;
+  nom!: string;
+  poste?: string;
   description?: string;
 }

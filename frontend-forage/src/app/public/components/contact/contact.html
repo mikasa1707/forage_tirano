@@ -1,109 +1,84 @@
 <div class="conteiner py-5">
-  <div class="card shadow border-0 mx-auto" style="max-width: 600px; margin-top: 60px">
+  <!-- TOASTS -->
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    @if (sent) {
+      <div class="toast align-items-center text-bg-success border-0 show">
+        <div class="d-flex">
+          <div class="toast-body">✔ Message envoyé avec succès</div>
+          <button class="btn-close btn-close-white me-2 m-auto" (click)="sent = false"></button>
+        </div>
+      </div>
+    }
+
+    @if (errorMsg) {
+      <div class="toast align-items-center text-bg-danger border-0 show">
+        <div class="d-flex">
+          <div class="toast-body">❌ {{ errorMsg }}</div>
+          <button class="btn-close btn-close-white me-2 m-auto"></button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- CARD -->
+  <div class="card shadow border-0 mx-auto mb-5 contact-card">
     <div class="card-body p-4">
       <h1>Contactez-nous</h1>
       <h3>au <span>+261 34 00 120 11</span></h3>
-      <span>ou par message privee</span>
+      <span>ou par message privée</span>
+
       <form [formGroup]="form" (ngSubmit)="send()">
-        <div class="mb-1">
+        <!-- NOM -->
+        <div class="mb-2">
           <label class="form-label">Nom</label>
-          <input type="text" class="form-control" placeholder="Votre nom" formControlName="nom" />
+          <input class="form-control" formControlName="nom" name="nom" id="nom" />
           @if (form.get('nom')?.touched && form.get('nom')?.invalid) {
-            <small class="text-danger">Le nom est obligatoire</small>
+            <small class="text-danger"> Nom requis </small>
           }
         </div>
 
-        <div class="mb-1">
+        <!-- TELEPHONE -->
+        <div class="mb-2">
           <label class="form-label">Téléphone</label>
-
-          <input
-            type="tel"
-            class="form-control"
-            placeholder="034 00 120 11"
-            formControlName="telephone"
-            autocomplete="off"
-            inputmode="tel"
-          />
-
+          <input class="form-control" formControlName="telephone" name="tel" id="tel" />
           @if (form.get('telephone')?.touched && form.get('telephone')?.invalid) {
-            <small class="text-danger">Le téléphone est obligatoire</small>
+            <small class="text-danger"> Téléphone invalide </small>
           }
         </div>
 
-        <div class="mb-1">
+        <!-- EMAIL -->
+        <div class="mb-2">
           <label class="form-label">Email</label>
-          <input
-            type="email"
-            class="form-control"
-            placeholder="mail@exemple.com"
-            formControlName="email"
-          />
-          @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
-            <small class="text-danger">L'email est obligatoire</small>
-          }
-          @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
-            <small class="text-danger">Email invalide</small>
+          <input class="form-control" formControlName="email" name="mail" id="mail" />
+          @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <small class="text-danger"> Email invalide </small>
           }
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Objet de votre demande</label>
-
+        <!-- SUJET -->
+        <div class="mb-2">
+          <label class="form-label">Objet</label>
           <select class="form-select" formControlName="sujet" (change)="onSujetChange()">
-            <option value="">-- Sélectionnez un objet --</option>
-
+            <option value="">-- Choisir --</option>
             @for (sujet of sujets; track sujet.value) {
-              <option [value]="sujet.value">
-                {{ sujet.label }}
-              </option>
+              <option [value]="sujet.value">{{ sujet.label }}</option>
             }
           </select>
-
-          @if (form.get('sujet')?.touched && form.get('sujet')?.invalid) {
-            <small class="text-danger"> Veuillez sélectionner un objet </small>
-          }
         </div>
 
+        <!-- MESSAGE -->
         <div class="mb-3">
-          <label class="form-label">Votre message</label>
-          <textarea class="form-control" rows="4" formControlName="message"></textarea>
-          @if (
-            (form.get('nom')?.dirty || form.get('nom')?.touched) &&
-            form.get('nom')?.hasError('required')
-          ) {
-            <small class="text-danger">Le message est obligatoire</small>
-          }
-          @if (
-            (form.get('nom')?.dirty || form.get('nom')?.touched) &&
-            form.get('message')?.hasError('minlength')
-          ) {
-            <small class="text-danger">Message trop court</small>
+          <label class="form-label">Message</label>
+          <textarea class="form-control" rows="5" formControlName="message"></textarea>
+          @if (form.get('message')?.touched && form.get('message')?.invalid) {
+            <small class="text-danger"> Message invalide (min 10 caractères) </small>
           }
         </div>
 
+        <!-- BUTTON -->
         <button class="btn btn-primary w-100" type="submit" [disabled]="sending">
           {{ sending ? 'Envoi...' : 'Envoyer' }}
         </button>
-
-        @if (sent) {
-          <div class="alert alert-success shadow-sm rounded-4 px-3 py-2 mt-3 fade show">
-            <div class="d-flex align-items-center gap-2">
-              <i class="fas fa-circle-check text-success"></i>
-              <strong>Succès :</strong>
-              <span>Message envoyé</span>
-            </div>
-          </div>
-        }
-
-        @if (errorMsg) {
-          <div class="alert alert-danger shadow-sm rounded-4 px-3 py-2 mt-3 fade show">
-            <div class="d-flex align-items-center gap-2">
-              <i class="fas fa-circle-xmark text-danger"></i>
-              <strong>Erreur :</strong>
-              <span>{{ errorMsg }}</span>
-            </div>
-          </div>
-        }
       </form>
     </div>
   </div>
