@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'https://foragetirano-production.up.railway.app'
+  api: 'https://foragetirano.onrender.com/'
 };
