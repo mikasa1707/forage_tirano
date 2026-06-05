@@ -44,7 +44,7 @@ import { Contact } from './contact/entities/contact.entity';
     // }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      url: process.env.DATABASE_URL,
+      url: process.env.DATABASE_URI,
       entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
       synchronize: true,
     }),
