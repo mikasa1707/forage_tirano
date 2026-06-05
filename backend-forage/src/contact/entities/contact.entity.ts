@@ -8,30 +8,30 @@ import {
 @Entity('contacts')
 export class Contact {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column('text')
-  message: string;
+  message!: string;
 
   @Column({
     type: 'enum',
     enum: ['nouveau', 'lu', 'traite'],
     default: 'nouveau',
   })
-  status: 'nouveau' | 'lu' | 'traite';
+  status!: 'nouveau' | 'lu' | 'traite';
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Column()
-  nom: string;
+  nom!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  telephone: string;
+  telephone!: string;
 
-  @Column()
-  sujet: string;
+  @Column({ nullable: true })
+  sujet!: string;
 }
