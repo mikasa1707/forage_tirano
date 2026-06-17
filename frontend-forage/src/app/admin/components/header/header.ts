@@ -67,7 +67,7 @@ export class Header implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.socket.offNewMessage();
+    this.socket.offNewMessage(() => { this.notif.loadUnreadCount(); });
     this.destroy$.next();
     this.destroy$.complete();
   }

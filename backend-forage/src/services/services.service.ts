@@ -1,41 +1,70 @@
 import { Injectable } from '@nestjs/common';
 import { CreateServiceDto } from './create-service.dto';
 import { UpdateServiceDto } from './update-service.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Service } from './entities/service.entity';
+import { JsonStorageService } from '../../data/json-storage.service';
+import { Service } from './service.interface';
+import * as path from 'path';
 
 @Injectable()
 export class ServicesService {
-  constructor(
-    @InjectRepository(Service)
-    private repo: Repository<Service>,
-  ) {}
+  private filePath = path.join(process.cwd(), 'data/services.json');
 
-  findAllActive() {
-    return this.repo.find({
-      where: { is_active: 1 },
-      order: { created_at: 'DESC' },
-    });
+  constructor(private storage: JsonStorageService<Service>) {}
+
+  async findAllActive() {
+    const data = await this.storage.read(this.filePath);
+
+    return data
+      .filter(s => s.is_active === 1)
+      .sort((a, b) =>
+        new Date(b.created_at).getTime() -
+        new Date(a.created_at).getTime()
+      );
   }
 
-  findAll() {
-    return this.repo.find();
+  async findAll() {
+    return this.storage.read(this.filePath);
   }
 
-  // create(fd: FormData) {
-  //   return this.http.post(`${this.api}/services`, fd);
-  // }
+  async create(data: CreateServiceDto) {
+    const list = await this.findAll();
 
-  create(data: CreateServiceDto) {
-    return this.repo.save(this.repo.create(data));
+    const newService: Service = {
+      ...data,
+      id: list.length ? Math.max(...list.map(i => i.id)) + 1 : 1,
+      created_at: new Date().toISOString(),
+      is_active: data.is_active ?? 1,
+    };
+
+    list.push(newService);
+    await this.storage.write(this.filePath, list);
+
+    return newService;
   }
 
-  update(id: number, data: UpdateServiceDto) {
-    return this.repo.update(id, data);
+  async update(id: number, data: UpdateServiceDto) {
+    const list = await this.findAll();
+
+    const index = list.findIndex(s => s.id === id);
+    if (index === -1) return null;
+
+    list[index] = {
+      ...list[index],
+      ...data,
+    };
+
+    await this.storage.write(this.filePath, list);
+
+    return list[index];
   }
 
-  remove(id: number) {
-    return this.repo.delete(id);
+  async remove(id: number) {
+    let list = await this.findAll();
+
+    list = list.filter(s => s.id !== id);
+
+    await this.storage.write(this.filePath, list);
+
+    return { deleted: true };
   }
 }

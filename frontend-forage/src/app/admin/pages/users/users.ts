@@ -2,11 +2,14 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsersAdminService } from '../../../services/users.service';
+import { AuthService } from '../../../services/auth.service';
+import { Role, ROLES } from '../../../core/roles';
+import { ROLE_UI } from '../../../core/roles-ui';
 
 type AdminUser = {
   id: number;
   username: string;
-  role: string;
+  role: Role;
 };
 
 @Component({
@@ -21,6 +24,9 @@ export class Users implements OnInit {
   error = '';
   users$: any;
 
+  roles = ROLES;
+  roleUI = ROLE_UI;
+
   form = {
     username: '',
     password: '',
@@ -29,8 +35,9 @@ export class Users implements OnInit {
 
   constructor(
     private readonly usersService: UsersAdminService,
+    public readonly auth: AuthService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   isOpen = false;
 
@@ -40,6 +47,10 @@ export class Users implements OnInit {
 
   closeModal() {
     this.isOpen = false;
+  }
+
+  getRole() {
+    this.auth.getRole();
   }
 
   ngOnInit(): void {
@@ -97,6 +108,29 @@ export class Users implements OnInit {
       username: '',
       password: '',
       role: 'user',
+    };
+  }
+
+  getRoleClass(role: string): string {
+    switch (role) {
+      case 'admin':
+        return 'bg-primary';
+      case 'editor':
+        return 'bg-warning';
+      case 'user':
+        return 'bg-info';
+      case 'commercial':
+        return 'bg-success';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  getRoleUI(role: string) {
+    return this.roleUI[role] ?? {
+      label: role,
+      icon: 'fa fa-question',
+      class: 'bg-secondary',
     };
   }
 }

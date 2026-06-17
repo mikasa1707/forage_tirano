@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment'
+import { Role } from '../core/roles';
+
+
 
 type AdminUser = {
   id: number;
   username: string;
-  role: string;
+  role: Role;
 };
 
 type CreateUserPayload = {

@@ -1,14 +1,15 @@
-import { IsIn, IsString, MinLength } from 'class-validator';
+import { IsEnum, IsIn, IsString, MinLength } from 'class-validator';
+import { Role } from '../user.interface';
+
 
 export class CreateUserDto {
   @IsString()
-  username: string;
+  username!: string;
 
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
-  @IsString()
-  @IsIn(['admin', 'editor', 'user'])
-  role: string;
+  @IsEnum(Role)
+  role!: Role;
 }

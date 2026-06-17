@@ -1,8 +1,10 @@
 <div class="toolbar">
   <h2>Gestion des travaux</h2>
-  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openCreate()">
-    <i class="fa fa-plus"></i>
-  </button>
+  @if (canCreate()) {
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openCreate()">
+      <i class="fa fa-plus"></i>
+    </button>
+  }
 </div>
 <div class="card d-flex w-100">
   <div class="card-body">
@@ -56,19 +58,21 @@
                     type="button"
                     class="btn btn-sm btn-outline-secondary border-0"
                     (click)="openEdit(t)"
-                    title="Modifier"
+                    [title]="canEdit() ? 'Modifier' : 'Afficher'"
                   >
-                    <i class="fa fa-pencil"></i>
+                    <i [ngClass]="canEdit() ? 'fa fa-pencil' : 'fa fa-book-open'"></i>
                   </button>
 
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-danger border-0"
-                    (click)="remove(t.id)"
-                    title="Supprimer"
-                  >
-                    <i class="fa fa-trash"></i>
-                  </button>
+                  @if (canDelete()) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger border-0"
+                      (click)="remove(t.id)"
+                      title="Supprimer"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  }
                 </div>
               </td>
             </tr>
@@ -159,15 +163,16 @@
               @for (ph of existingPhotos; track ph.id) {
                 <div class="thumbItem">
                   <!-- bouton supprimer -->
-                  <button
-                    type="button"
-                    class="thumb-delete"
-                    title="Supprimer"
-                    (click)="confirmRemove(ph)"
-                  >
-                    ✕
-                  </button>
-
+                  @if (canEdit()) {
+                    <button
+                      type="button"
+                      class="thumb-delete"
+                      title="Supprimer"
+                      (click)="confirmRemove(ph)"
+                    >
+                      ✕
+                    </button>
+                  }
                   <!-- thumbnail -->
                   <button
                     type="button"
@@ -175,6 +180,7 @@
                     (click)="setExistingMain(ph.image)"
                     [class.main]="imgUrl(ph.image) === imgUrl(existingMainUrl)"
                     title="Définir comme principale"
+                    [disabled]="!canEdit()"
                   >
                     <img [src]="imgUrl(ph.image)" />
                     @if (imgUrl(ph.image) === imgUrl(existingMainUrl)) {
@@ -185,13 +191,15 @@
               }
             </div>
           }
-
-          <label class="oai-field">
-            <span class="oai-label">Ajouter des photos</span>
-            <input type="file" multiple accept="image/*" (change)="onFilesChange($event)" />
-            <small class="oai-hint"> La première photo sera utilisée comme photo principale </small>
-          </label>
-
+          @if (canEdit()) {
+            <label class="oai-field">
+              <span class="oai-label">Ajouter des photos</span>
+              <input type="file" multiple accept="image/*" (change)="onFilesChange($event)" />
+              <small class="oai-hint">
+                La première photo sera utilisée comme photo principale
+              </small>
+            </label>
+          }
           @if (previews.length > 0) {
             <div class="sectionTitle">Nouvelles photos</div>
 
@@ -220,13 +228,15 @@
         <!-- <button type="submit" class="oai-btn oai-btn--primary" [disabled]="form.invalid">
           {{ editing ? 'Enregistrer' : 'Créer' }}
         </button> -->
-        <button class="oai-btn oai-btn--ghost" type="button" (click)="nextOrSave()">
-          @if (existingPhotos.length > 0 || selectedFiles.length > 0) {
-            Suivant
-          } @else {
-            Enregistrer
-          }
-        </button>
+        @if (canEdit()) {
+          <button class="oai-btn oai-btn--ghost" type="button" (click)="nextOrSave()">
+            @if (existingPhotos.length > 0 || selectedFiles.length > 0) {
+              Suivant
+            } @else {
+              Enregistrer
+            }
+          </button>
+        }
       </div>
     </form>
   </div>

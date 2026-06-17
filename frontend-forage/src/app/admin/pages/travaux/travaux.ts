@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormsModule } 
 import { TravauxApi } from '../../../services/travaux.service';
 import { TravauxModel, TravauxPhoto } from '../../../models/travaux.model';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
 
 type CaptionItem =
   | { kind: 'existing'; id: number; src: string; value: string }
@@ -46,6 +47,7 @@ export class Travaux implements OnInit {
     private api: TravauxApi,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
+    public readonly auth: AuthService
   ) {
     this.form = this.fb.group({
       titre: ['', Validators.required],
@@ -292,5 +294,18 @@ export class Travaux implements OnInit {
 
     if (this.mainIndex > i) this.mainIndex--;
     if (this.mainIndex >= this.selectedFiles.length) this.mainIndex = 0;
+  }
+
+  canCreate(): boolean {
+    this.form.disable();
+    return this.auth.hasRole(['admin', 'editor']);
+  }
+
+  canEdit(): boolean {
+    return this.auth.hasRole(['admin', 'editor']);
+  }
+
+  canDelete(): boolean {
+    return this.auth.hasRole(['admin']);
   }
 }

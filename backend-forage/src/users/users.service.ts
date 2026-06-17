@@ -3,32 +3,33 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/user.entity';
+import * as path from 'path';
+
+import { JsonStorageService } from '../../data/json-storage.service';
+import { Role, User } from './user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-  ) {}
+  private file = path.join(process.cwd(), 'data/users.json');
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find({
-      order: { id: 'DESC' },
-      select: ['id', 'username', 'role'],
-    });
+  constructor(private storage: JsonStorageService<User>) { }
+
+  async findAll(): Promise<Omit<User, 'password'>[]> {
+    const data = await this.storage.read(this.file);
+
+    return data
+      .sort((a, b) => b.id - a.id)
+      .map(({ password, ...user }) => user);
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne({
-      where: { id },
-      select: ['id', 'username', 'role', 'password'],
-    });
+    const data = await this.storage.read(this.file);
+
+    const user = data.find(u => u.id === id);
 
     if (!user) {
       throw new NotFoundException('Utilisateur introuvable');
@@ -38,79 +39,84 @@ export class UsersService {
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    return this.usersRepository.findOne({
-      where: { username },
-    });
+    const data = await this.storage.read(this.file);
+
+    return data.find(u => u.username === username) || null;
   }
 
-  async create(data: CreateUserDto): Promise<Omit<User, 'password'>> {
-    const existing = await this.usersRepository.findOne({
-      where: { username: data.username },
-    });
+  async create(dto: CreateUserDto): Promise<Omit<User, 'password'>> {
+    const data = await this.storage.read(this.file);
+
+    const existing = data.find(u => u.username === dto.username);
 
     if (existing) {
       throw new ConflictException('Nom d’utilisateur déjà utilisé');
     }
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const _role: Role = (dto.role as Role) ?? 'admin';
 
-    const user = this.usersRepository.create({
-      username: data.username,
+    const newUser: User = {
+      id: data.length ? Math.max(...data.map(u => u.id)) + 1 : 1,
+      username: dto.username,
       password: hashedPassword,
-      role: data.role,
-    });
+      role: _role,
+      created_at: new Date().toISOString(),
+    };
 
-    const saved = await this.usersRepository.save(user);
+    data.push(newUser);
 
-    return {
-      id: saved.id,
-      username: saved.username,
-      role: saved.role,
-    } as Omit<User, 'password'>;
+    await this.storage.write(this.file, data);
+
+    const { password, ...result } = newUser;
+    return result;
   }
 
-  async update(
-    id: number,
-    data: UpdateUserDto,
-  ): Promise<Omit<User, 'password'>> {
-    const user = await this.findOne(id);
+  async update(id: number, dto: UpdateUserDto): Promise<Omit<User, 'password'>> {
+    const data = await this.storage.read(this.file);
 
-    if (data.username && data.username !== user.username) {
-      const existing = await this.usersRepository.findOne({
-        where: { username: data.username },
-      });
+    const index = data.findIndex(u => u.id === id);
 
-      if (existing) {
+    if (index === -1) {
+      throw new NotFoundException('Utilisateur introuvable');
+    }
+
+    const user = data[index];
+
+    // username check
+    if (dto.username && dto.username !== user.username) {
+      const exists = data.find(u => u.username === dto.username);
+      if (exists) {
         throw new ConflictException('Nom d’utilisateur déjà utilisé');
       }
+      user.username = dto.username;
     }
 
-    if (data.username !== undefined) {
-      user.username = data.username;
+    if (dto.role !== undefined) {
+      user.role = dto.role as Role;
     }
 
-    if (data.role !== undefined) {
-      user.role = data.role;
+    if (dto.password) {
+      user.password = await bcrypt.hash(dto.password, 10);
     }
 
-    if (data.password) {
-      user.password = await bcrypt.hash(data.password, 10);
-    }
+    data[index] = user;
 
-    const saved = await this.usersRepository.save(user);
+    await this.storage.write(this.file, data);
 
-    return {
-      id: saved.id,
-      username: saved.username,
-      role: saved.role,
-    } as Omit<User, 'password'>;
+    const { password, ...result } = user;
+    return result;
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.usersRepository.delete(id);
+    const data = await this.storage.read(this.file);
 
-    if (result.affected === 0) {
+    const filtered = data.filter(u => u.id !== id);
+
+    if (filtered.length === data.length) {
       throw new NotFoundException('Utilisateur introuvable');
     }
+
+    await this.storage.write(this.file, filtered);
   }
 }

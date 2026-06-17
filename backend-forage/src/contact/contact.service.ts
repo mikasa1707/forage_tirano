@@ -3,44 +3,70 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Contact } from './entities/contact.entity';
+
+import * as path from 'path';
+import { JsonStorageService } from '../../data/json-storage.service';
+import { Contact } from './contact.interface';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { MessageGateway } from './message.gateway';
 import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class ContactService {
+  private file = path.join(process.cwd(), 'data/contacts.json');
+
   constructor(
-    @InjectRepository(Contact)
-    private repo: Repository<Contact>,
+    private storage: JsonStorageService<Contact>,
     private gateway: MessageGateway,
-    private readonly notificationGateway: NotificationGateway,
-  ) { }
+    private notificationGateway: NotificationGateway,
+  ) {}
 
   async create(data: CreateContactDto) {
     if (!data.email || !data.message || !data.nom) {
       throw new BadRequestException('Champs manquants');
     }
 
-    const contact = this.repo.create({
-      ...data,
+    const list = await this.storage.read(this.file);
+
+    const newContact: Contact = {
+      id: list.length ? Math.max(...list.map(c => c.id)) + 1 : 1,
+
+      nom: data.nom,
+      email: data.email,
+      telephone: data.telephone,
+
+      sujet: data.sujet,
+      message: data.message,
+
       status: 'nouveau',
-    });
-    const saved = await this.repo.save(contact);
+
+      createdAt: new Date().toISOString(),
+    };
+
+    list.push(newContact);
+
+    await this.storage.write(this.file, list);
+
+    // 🔥 websocket event
     this.notificationGateway.emitNewMessage();
-    return saved;
+
+    return newContact;
   }
 
-  findAll() {
-    return this.repo.find({
-      order: { createdAt: 'DESC' },
-    });
+  async findAll() {
+    const list = await this.storage.read(this.file);
+
+    return list.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime(),
+    );
   }
 
   async findOne(id: number) {
-    const contact = await this.repo.findOneBy({ id });
+    const list = await this.findAll();
+
+    const contact = list.find(c => c.id === id);
 
     if (!contact) {
       throw new NotFoundException('Message introuvable');
@@ -49,40 +75,70 @@ export class ContactService {
     return contact;
   }
 
+  async saveAll(list: Contact[]) {
+    await this.storage.write(this.file, list);
+  }
+
   async markAsRead(id: number) {
-    const contact = await this.findOne(id);
+    const list = await this.storage.read(this.file);
+
+    const contact = list.find(c => c.id === id);
+    if (!contact) throw new NotFoundException();
+
     contact.status = 'lu';
 
-    const saved = await this.repo.save(contact);
+    await this.saveAll(list);
+
     this.notificationGateway.emitUpdate();
-    return saved;
+
+    return contact;
   }
 
   async markAsUnread(id: number) {
-    const contact = await this.findOne(id);
+    const list = await this.storage.read(this.file);
+
+    const contact = list.find(c => c.id === id);
+    if (!contact) throw new NotFoundException();
+
     contact.status = 'nouveau';
 
-    const saved = await this.repo.save(contact);
+    await this.saveAll(list);
+
     this.notificationGateway.emitNewMessage();
-    return saved;
+
+    return contact;
   }
 
   async markAsTreat(id: number) {
-    const contact = await this.findOne(id);
+    const list = await this.storage.read(this.file);
+
+    const contact = list.find(c => c.id === id);
+    if (!contact) throw new NotFoundException();
+
     contact.status = 'traite';
 
-    const saved = await this.repo.save(contact);
-    return saved;
+    await this.saveAll(list);
+
+    return contact;
   }
 
   async remove(id: number) {
-    const contact = await this.findOne(id);
-    return this.repo.remove(contact);
+    const list = await this.storage.read(this.file);
+
+    const filtered = list.filter(c => c.id !== id);
+
+    if (filtered.length === list.length) {
+      throw new NotFoundException('Message introuvable');
+    }
+
+    await this.storage.write(this.file, filtered);
+
+    return { ok: true };
   }
 
   async count() {
-    return this.repo.count({
-      where: { status: 'nouveau' },
-    });
+    const list = await this.storage.read(this.file);
+
+    return list.filter(c => c.status === 'nouveau').length;
   }
 }

@@ -14,71 +14,62 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { EquipesService } from './equipes.service';
-import { Equipe } from './entities/equipe.entity';
 import { equipesMulterConfig } from '../upload/multer.config';
-
 import { CreateEquipeDto } from './create-equipe.dto';
 import { UpdateEquipeDto } from './update-equipe.dto';
 
 @Controller('equipes')
 export class EquipesController {
-  constructor(private readonly equipesService: EquipesService) {}
+  constructor(private readonly service: EquipesService) {}
 
   @Get()
-  @Header(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate',
-  )
-  @Header('Pragma', 'no-cache')
-  @Header('Expires', '0')
-  findAll(): Promise<Equipe[]> {
-    return this.equipesService.findAll();
+  @Header('Cache-Control', 'no-store')
+  findAll() {
+    return this.service.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Equipe> {
-    return this.equipesService.findOne(id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOne(id);
   }
 
   @Post()
   @UseInterceptors(FileInterceptor('photo', equipesMulterConfig))
-  async create(
+  create(
     @Body() body: CreateEquipeDto,
     @UploadedFile() file?: Express.Multer.File,
-  ): Promise<Equipe> {
-    const data: Partial<Equipe> = { ...body };
+  ) {
+    const data: any = { ...body };
 
     if (file?.filename) {
       data.photo = `/uploads/equipes/${file.filename}`;
     }
 
-    return this.equipesService.create(data);
+    return this.service.create(data);
   }
 
   @Put(':id')
   @UseInterceptors(FileInterceptor('photo', equipesMulterConfig))
-  async update(
+  update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateEquipeDto,
     @UploadedFile() file?: Express.Multer.File,
-  ): Promise<Equipe> {
-    const data: Partial<Equipe> = { ...body };
+  ) {
+    const data: any = { ...body };
 
     if (file && !file.filename) {
-      throw new BadRequestException(
-        'Multer diskStorage not applied (filename undefined)',
-      );
+      throw new BadRequestException('Upload error');
     }
 
     if (file?.filename) {
       data.photo = `/uploads/equipes/${file.filename}`;
     }
 
-    return this.equipesService.update(id, data);
+    return this.service.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.equipesService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.service.remove(id);
   }
 }

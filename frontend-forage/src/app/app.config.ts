@@ -16,7 +16,7 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth.interceptors';
-import { loadingInterceptor } from './interceptors/loading.interceptor';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +24,8 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([apiInterceptor, authInterceptor, loadingInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([apiInterceptor, authInterceptor])),
+    provideHttpClient(withInterceptorsFromDi()),
+    LoadingInterceptor,
   ],
 };

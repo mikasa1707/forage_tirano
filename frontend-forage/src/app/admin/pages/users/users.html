@@ -4,9 +4,11 @@
       <h1>Gestion des utilisateurs</h1>
       <p class="subtitle">Crée, consulte et supprime les comptes utilisateurs.</p>
     </div>
-    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openModal()">
-      <i class="fa fa-plus"></i>
-    </button>
+    @if (auth.hasRole(['admin'])) {
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openModal()">
+        <i class="fa fa-plus"></i>
+      </button>
+    }
   </div>
 
   @if (error) {
@@ -52,9 +54,11 @@
           <div class="form-group">
             <label for="role">Rôle</label>
             <select id="role" [(ngModel)]="form.role" name="role">
-              <option value="admin">Admin</option>
-              <option value="editor">Editor</option>
-              <option value="user">User</option>
+              @for (role of roles; track role) {
+                <option [value]="role">
+                  {{ role }}
+                </option>
+              }
             </select>
           </div>
 
@@ -89,23 +93,24 @@
                   <td>{{ user.username }}</td>
                   <td>
                     <span
-                      class="badge"
-                      [class.bg-primary]="user.role === 'admin'"
-                      [class.bg-warning]="user.role === 'editor'"
-                      [class.bg-info]="user.role === 'user'"
+                      class="badge d-inline-flex align-items-center gap-1"
+                      [class]="getRoleUI(user.role).class"
                     >
-                      {{ user.role }}
+                      <i [class]="getRoleUI(user.role).icon"></i>
+                      {{ getRoleUI(user.role).label }}
                     </span>
                   </td>
                   <td>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-danger border-0"
-                      (click)="deleteUser(user.id)"
-                      title="Supprimer"
-                    >
-                      <i class="fa fa-trash"></i>
-                    </button>
+                    @if (auth.hasRole(['admin'])) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger border-0"
+                        (click)="deleteUser(user.id)"
+                        title="Supprimer"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    }
                   </td>
                 </tr>
               }

@@ -4,6 +4,7 @@ import { EquipesService } from '../../../services/equipes.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-equipes',
@@ -33,6 +34,7 @@ export class Equipes implements OnInit {
     private equipesService: EquipesService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
+    public readonly auth: AuthService
   ) {
     this.form = this.fb.group({
       nom: [{ value: '', disabled: true }, Validators.required],
@@ -208,5 +210,15 @@ export class Equipes implements OnInit {
     });
   }
 
+  canCreate(): boolean {
+    return this.auth.hasRole(['admin', 'editor']);
+  }
 
+  canEdit(): boolean {
+    return this.auth.hasRole(['admin', 'editor']);
+  }
+
+  canDelete(): boolean {
+    return this.auth.hasRole(['admin']);
+  }
 }

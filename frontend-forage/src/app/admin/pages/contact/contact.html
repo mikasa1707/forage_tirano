@@ -1,60 +1,54 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h2 class="mb-0">Messages clients</h2>
-
   <button class="btn btn-outline-primary btn-sm border-0" (click)="refresh()">
     <i class="fas fa-sync-alt me-1"></i>
   </button>
 </div>
 
-@if (error) {
-  <div class="alert alert-danger">{{ error }}</div>
-}
 <div class="d-flex gap-2 mb-3">
   <button
     class="btn btn-sm"
-    [class.btn-primary]="filterStatus === 'all'"
-    [class.btn-outline-primary]="filterStatus !== 'all'"
-    (click)="filterStatus = 'all'"
+    [class.btn-primary]="filterStatus() === 'all'"
+    [class.btn-outline-primary]="filterStatus() !== 'all'"
+    (click)="filterStatus.set('all')"
   >
     Tous
   </button>
 
   <button
     class="btn btn-sm"
-    [class.btn-warning]="filterStatus === 'nouveau'"
-    [class.btn-outline-warning]="filterStatus !== 'nouveau'"
-    (click)="filterStatus = 'nouveau'"
+    [class.btn-warning]="filterStatus() === 'nouveau'"
+    [class.btn-outline-warning]="filterStatus() !== 'nouveau'"
+    (click)="filterStatus.set('nouveau')"
   >
-    Nouveau ({{ countNouveau }})
+    Nouveau ({{ countNouveau() }})
   </button>
 
   <button
     class="btn btn-sm"
-    [class.btn-primary]="filterStatus === 'lu'"
-    [class.btn-outline-primary]="filterStatus !== 'lu'"
-    (click)="filterStatus = 'lu'"
+    [class.btn-primary]="filterStatus() === 'lu'"
+    [class.btn-outline-primary]="filterStatus() !== 'lu'"
+    (click)="filterStatus.set('lu')"
   >
-    Lu ({{ countLu }})
+    Lu ({{ countLu() }})
   </button>
 
   <button
     class="btn btn-sm"
-    [class.btn-success]="filterStatus === 'traite'"
-    [class.btn-outline-success]="filterStatus !== 'traite'"
-    (click)="filterStatus = 'traite'"
+    [class.btn-success]="filterStatus() === 'traite'"
+    [class.btn-outline-success]="filterStatus() !== 'traite'"
+    (click)="filterStatus.set('traite')"
   >
-    Traité ({{ countTraite }})
+    Traité ({{ countTraite() }})
   </button>
 </div>
-<div
-  class="col-12"
-  style="overflow-y: scroll; overflow-x: hidden; height: 700px; max-height: 700px"
->
+
+<div class="col-12" style="overflow-y: scroll; overflow-x: hidden; height: 700px; max-height: 700px">
   <div class="card d-flex w-100">
     <div class="card-body">
       <div class="table-responsive modern-table">
         <table class="table table-sm table-hover w-100">
-          <thead class="">
+          <thead>
             <tr>
               <th>Date</th>
               <th>Client</th>
@@ -63,32 +57,24 @@
               <th>Action</th>
             </tr>
           </thead>
-
           <tbody>
-            @if (contacts.length > 0) {
-              @for (contact of filteredContacts; track contact.id) {
+            @if (contacts().length > 0) {
+              @for (contact of filteredContacts(); track contact.id) {
                 <tr
                   [class.unread-row]="contact.status === 'nouveau'"
                   style="cursor: pointer"
                   (click)="openMessage(contact)"
                 >
                   <td>{{ contact.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
-
                   <td>
-                    <div>
-                      <strong>{{ contact.nom }}</strong>
-                    </div>
+                    <div><strong>{{ contact.nom }}</strong></div>
                     <div>{{ contact.email }}</div>
                     <div>{{ contact.telephone }}</div>
                     <div class="text-muted small">{{ contact.sujet }}</div>
                   </td>
-
                   <td>
-                    <div class="message-cell">
-                      {{ contact.message }}
-                    </div>
+                    <div class="message-cell">{{ contact.message }}</div>
                   </td>
-
                   <td>
                     <span
                       class="badge"
@@ -105,7 +91,6 @@
                       }}
                     </span>
                   </td>
-
                   <td>
                     @if (contact.status === 'nouveau') {
                       <p (click)="markAsRead(contact.id); openMessage(contact)">
@@ -132,37 +117,40 @@
   </div>
 </div>
 
+<!-- Modale -->
 <div class="modal fade" id="messageModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content border-0 rounded-4">
-      <!-- HEADER -->
       <div class="modal-header">
-        <h5 class="modal-title">
-          Message de <strong>{{ messageSelected.nom }}</strong>
-        </h5>
+        @if (messageSelected()) {
+          <h5 class="modal-title">
+            Message de <strong>{{ messageSelected()!.nom }}</strong>
+          </h5>
+        }
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <!-- BODY -->
       <div class="modal-body">
-        <div class="p-3 mb-2">
-          Sujet: <strong>{{ messageSelected.sujet }}</strong>
-        </div>
-        <div class="p-3 mb-2">
-          <div class="message-view">
-            {{ messageSelected.message }}
+        @if (messageSelected()) {
+          <div class="p-3 mb-2">
+            Sujet: <strong>{{ messageSelected()!.sujet }}</strong>
           </div>
-        </div>
-        <div class="p-3 mb-2">
-          <strong>{{ messageSelected.nom }}</strong>
-          <p>
-            <a href="mailto:{{ messageSelected.email }}">{{ messageSelected.email }}</a>
-          </p>
-          <p>{{ messageSelected.telephone }}</p>
-        </div>
+          <div class="p-3 mb-2">
+            <div class="message-view">
+              {{ messageSelected()!.message }}
+            </div>
+          </div>
+          <div class="p-3 mb-2">
+            <strong>{{ messageSelected()!.nom }}</strong>
+            <p>
+              <a href="mailto:{{ messageSelected()!.email }}">{{ messageSelected()!.email }}</a>
+            </p>
+            <p>{{ messageSelected()!.telephone }}</p>
+          </div>
+        }
       </div>
       <div class="modal-footer">
-        @if (messageSelected.status === 'lu') {
-          <button class="btn btn-sm btn-primary" (click)="markAsTreat(messageSelected.id)">
+        @if (messageSelected()?.status === 'lu') {
+          <button class="btn btn-sm btn-primary" (click)="markAsTreat(messageSelected()!.id)">
             Message traité
           </button>
         }

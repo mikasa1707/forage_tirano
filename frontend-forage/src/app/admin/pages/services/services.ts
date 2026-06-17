@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { FormsModule } from '@angular/forms';
 import { ServiceItem, ServicesApiService } from '../../../services/services.service';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-services',
@@ -30,6 +31,7 @@ export class Services implements OnInit {
   constructor(
     private api: ServicesApiService,
     private cdr: ChangeDetectorRef,
+    public readonly auth: AuthService
   ) { }
 
   ngOnInit() {
@@ -197,5 +199,17 @@ export class Services implements OnInit {
 
   cancel() {
     this.newService = {};
+  }
+
+  canCreate(): boolean {
+    return this.auth.hasRole(['admin', 'editor']);
+  }
+
+  canEdit(): boolean {
+    return this.auth.hasRole(['admin', 'editor']);
+  }
+
+  canDelete(): boolean {
+    return this.auth.hasRole(['admin']);
   }
 }

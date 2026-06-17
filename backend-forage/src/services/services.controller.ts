@@ -18,21 +18,21 @@ import { servicesMulterConfig } from '../upload/multer.config';
 
 @Controller('services')
 export class ServicesController {
-  constructor(private readonly services: ServicesService) { }
+  constructor(private readonly services: ServicesService) {}
 
-  // ✅ PUBLIC
+  // PUBLIC
   @Get()
   findAllActive() {
     return this.services.findAllActive();
   }
 
-  // ✅ ADMIN
+  // ADMIN
   @Get('admin')
   findAll() {
     return this.services.findAll();
   }
 
-  // ✅ CREATE + upload image
+  // CREATE
   @Post()
   @UseInterceptors(FileInterceptor('image', servicesMulterConfig))
   async create(
@@ -40,15 +40,15 @@ export class ServicesController {
     @UploadedFile() file?: Express.Multer.File,
   ) {
     if (file) {
-      // ✅ chemin accessible via /uploads
       dto.image = `/uploads/services/${file.filename}`;
     }
+
     dto.is_active = dto.is_active ?? 1;
 
     return this.services.create(dto);
   }
 
-  // ✅ UPDATE + upload image (optionnel)
+  // UPDATE
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image', servicesMulterConfig))
   async update(
@@ -63,12 +63,15 @@ export class ServicesController {
     return this.services.update(id, dto);
   }
 
+  // ACTIVATE / DESACTIVATE
   @Patch(':id/active/:active')
-  setActive(
+  async setActive(
     @Param('id', ParseIntPipe) id: number,
     @Param('active', ParseIntPipe) active: number,
   ) {
-    return this.services.update(id, { is_active: active ? 1 : 0 });
+    return this.services.update(id, {
+      is_active: active ? 1 : 0,
+    });
   }
 
   @Delete(':id')

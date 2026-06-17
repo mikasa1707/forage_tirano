@@ -3,62 +3,67 @@
 <!-- Création -->
 <div class="row mb-2">
   <!-- FORM -->
-  <div class="col-12 col-md-8">
-    <div class="card p-3 mb-4" style="height: 300px; overflow: auto">
-      <div class="position-relative">
+  @if (canCreate()) {
+    <div class="col-12 col-md-8">
+      <div class="card p-3 mb-4" style="height: 300px; overflow: auto">
+        <div class="position-relative">
+          <input
+            class="form-control mb-1"
+            placeholder="Titre"
+            [(ngModel)]="newService.titre"
+            (input)="onTitreInput()"
+            (blur)="hideLater()"
+            autocomplete="off"
+          />
+
+          @if (showSuggestions && filteredTitles.length > 0) {
+            <ul class="list-group position-absolute w-100 z-3">
+              @for (t of filteredTitles; track $index) {
+                <li class="list-group-item list-group-item-action" (mousedown)="pickTitle(t)">
+                  {{ t }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <textarea
+          class="form-control mb-2"
+          placeholder="Description"
+          [(ngModel)]="newService.description"
+        ></textarea>
+
         <input
-          class="form-control mb-1"
-          placeholder="Titre"
-          [(ngModel)]="newService.titre"
-          (input)="onTitreInput()"
-          (blur)="hideLater()"
-          autocomplete="off"
+          #fileInput
+          type="file"
+          class="form-control mb-2"
+          accept="image/*"
+          (change)="onFileSelected($event)"
         />
-
-        @if (showSuggestions && filteredTitles.length > 0) {
-          <ul class="list-group position-absolute w-100 z-3">
-            @for (t of filteredTitles; track $index) {
-              <li class="list-group-item list-group-item-action" (mousedown)="pickTitle(t)">
-                {{ t }}
-              </li>
-            }
-          </ul>
-        }
-      </div>
-
-      <textarea
-        class="form-control mb-2"
-        placeholder="Description"
-        [(ngModel)]="newService.description"
-      ></textarea>
-
-      <input
-        #fileInput
-        type="file"
-        class="form-control mb-2"
-        accept="image/*"
-        (change)="onFileSelected($event)"
-      />
-      <div class="d-flex gap-2 mt-3">
-        <!-- PRIMARY ACTION -->
-        <button
-          class="btn btn-success flex-grow-1 d-flex align-items-center justify-content-center gap-2"
-          (click)="save()"
-        >
-          <i class="fa-solid" [class.fa-plus]="!newService.id" [class.fa-pen]="newService.id"></i>
-          {{ newService.id ? 'Modifier' : 'Ajouter' }}
-        </button>
-
-        <!-- CANCEL (EDIT MODE ONLY) -->
-        @if (newService.id) {
-          <button class="btn btn-outline-danger d-flex align-items-center gap-2" (click)="cancel()">
-            <i class="fa-solid fa-xmark"></i>
-            Annuler
+        <div class="d-flex gap-2 mt-3">
+          <!-- PRIMARY ACTION -->
+          <button
+            class="btn btn-success flex-grow-1 d-flex align-items-center justify-content-center gap-2"
+            (click)="save()"
+          >
+            <i class="fa-solid" [class.fa-plus]="!newService.id" [class.fa-pen]="newService.id"></i>
+            {{ newService.id ? 'Modifier' : 'Ajouter' }}
           </button>
-        }
+
+          <!-- CANCEL (EDIT MODE ONLY) -->
+          @if (newService.id) {
+            <button
+              class="btn btn-outline-danger d-flex align-items-center gap-2"
+              (click)="cancel()"
+            >
+              <i class="fa-solid fa-xmark"></i>
+              Annuler
+            </button>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <!-- IMAGE PREVIEW -->
   <div class="col-12 col-md-4">
@@ -101,15 +106,17 @@
                 {{ s.description }}
               </td>
               <td>
-                <input type="checkbox" [checked]="!!s.is_active" (change)="toggle(s)" />
+                <input type="checkbox" [checked]="!!s.is_active" (change)="toggle(s)" [disabled]="!canEdit()"/>
               </td>
               <td>
                 <button class="btn btn-sm btn-outline-primary border-0" (click)="edit(s)">
-                  <i class="fa-solid fa-pencil"></i>
+                  <i [ngClass]="canEdit() ? 'fa-solid fa-pencil' : 'fa-solid fa-image'"></i>
                 </button>
+                @if (canDelete()) {
                 <button class="btn btn-sm btn-outline-danger border-0" (click)="remove(s.id)">
                   <i class="fa-solid fa-trash"></i>
                 </button>
+                }
               </td>
             </tr>
           }
