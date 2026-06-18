@@ -22,14 +22,19 @@ export class Travaux implements OnInit {
   showModal = false;
   showGallery = false;
   currentIndex = 0;
+  showAll = false;
+  maxRows = 2;
+  cols = 3;
+  maxVisibleCards = this.maxRows * this.cols;
 
   loading = false;
   errorMsg = '';
+  filter: string = 'all';
 
   constructor(
     private api: TravauxApi,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.load();
@@ -106,5 +111,40 @@ export class Travaux implements OnInit {
 
     // swap travaux[0] <-> travaux[i]
     [this.travaux[0], this.travaux[i]] = [this.travaux[i], this.travaux[0]];
+  }
+
+  setSelected(t: any) {
+    this.selectedTravaux = t;
+    this.filteredPhotos = t.photos ?? [];
+    const el = document.getElementById('hero-case-study');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  setFilter(f: string) {
+    this.filter = f;
+  }
+
+  filteredTravaux() {
+    if (this.filter === 'all') return this.travaux;
+    return this.travaux.filter(t => t.status === this.filter);
+  }
+
+  get displayedTravaux() {
+    const travaux = this.filteredTravaux();
+
+    if (this.showAll || travaux.length <= this.maxVisibleCards) {
+      return travaux;
+    }
+
+    return travaux.slice(0, this.maxVisibleCards - 1);
+  }
+
+  get remainingCount(): number {
+    return Math.max(
+      this.filteredTravaux().length - (this.maxVisibleCards - 1),
+      0
+    );
   }
 }

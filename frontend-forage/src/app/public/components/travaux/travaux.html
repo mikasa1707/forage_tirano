@@ -1,123 +1,102 @@
 <div class="travaux-page">
-  <h1 class="travaux-title permanent-marker-regular">Nos projets</h1>
+  <div class="trav-projets">
+    <!-- 🎯 HEADER + FILTRES -->
+    <header class="trav-header">
+      <h1 class="trav-title permanent-marker-regular">Nos projets</h1>
+      <div class="trav-filters-sticky">
+        <div class="trav-filters">
+          <button (click)="setFilter('all')" [class.active]="filter === 'all'">Tous</button>
+          <button
+            (click)="setFilter('en_cours')"
+            [class.active]="filter === 'en_cours'"
+            data-status="en_cours"
+          >
+            En cours
+          </button>
+          <button
+            (click)="setFilter('termine')"
+            [class.active]="filter === 'termine'"
+            data-status="termine"
+          >
+            Terminés
+          </button>
+          <button
+            (click)="setFilter('planifie')"
+            [class.active]="filter === 'planifie'"
+            data-status="planifie"
+          >
+            À venir
+          </button>
+        </div>
+      </div>
+    </header>
 
-  <div class="trav-layout">
-    <!-- ✅ CADRE 1 : travaux sélectionné -->
+    <!-- 🧠 HERO CASE STUDY -->
     @if (selectedTrav) {
-      <section class="selected-pane">
-        <article class="trav-col is-selected">
-          <div class="trav-card">
-            <div class="trav-media">
-              <img
-                [src]="apiUrl + selectedTrav.photo_principale"
-                [alt]="selectedTrav.titre"
-                loading="lazy"
-                (load)="onImgLoad($event)"
-                (error)="onImgError($event)"
-              />
-              <div class="trav-media-fallback">Image indisponible</div>
+      <section id="hero-case-study" class="hero-case">
+        <div class="hero-media">
+          <img [src]="apiUrl + selectedTrav.photo_principale" />
+          <div class="hero-overlay"></div>
+
+          <div class="hero-content">
+            <span class="hero-badge" [ngClass]="selectedTrav.status">
+              {{ selectedTrav.status }}
+            </span>
+
+            <h2>{{ selectedTrav.titre }}</h2>
+
+            <p>{{ selectedTrav.description }}</p>
+
+            <div class="hero-meta">
+              <span>📍 {{ selectedTrav.localisation }}</span>
+              <span>📅 {{ selectedTrav.date_debut | date }}</span>
             </div>
 
-            <div class="trav-body">
-              <div class="trav-head">
-                <h3 class="trav-name permanent-marker-regular">
-                  {{ selectedTrav.titre }}
-                </h3>
-                <span
-                  class="trav-status"
-                  [ngClass]="selectedTrav.status"
-                  [title]="selectedTrav.status"
-                >
-                </span>
-              </div>
-
-              <small class="trav-date">
-                {{ selectedTrav.date_debut ? (selectedTrav.date_debut | date: 'dd/MM/yyyy') : '—' }}
-                @if (selectedTrav.date_fin) {
-                  · {{ selectedTrav.date_fin | date: 'dd/MM/yyyy' }}
-                }
-              </small>
-
-              <p class="trav-desc">{{ selectedTrav.description || '—' }}</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" (click)="selectTravaux(selectedTrav)">
+                Voir galerie
+              </button>
             </div>
           </div>
-
-          <div class="trav-mini">
-            <div class="mini-card">
-              <div class="mini-value">{{ selectedTrav.localisation || '—' }}</div>
-            </div>
-
-            <div class="mini-card">
-              <div class="mini-value">
-                {{ selectedTrav.date_debut ? (selectedTrav.date_debut | date: 'dd/MM/yyyy') : '—' }}
-                @if (selectedTrav.date_fin) {
-                  · {{ selectedTrav.date_fin | date: 'dd/MM/yyyy' }}
-                }
-              </div>
-            </div>
-
-            <button class="btn btn-sm btn-dark mini-btn" (click)="selectTravaux(selectedTrav)">
-              <i class="fa-solid fa-image"></i>
-            </button>
-          </div>
-        </article>
+        </div>
       </section>
     }
 
-    <!-- ✅ CADRES 2,3,4,5... : liste cliquable qui swap -->
-    <section class="rail-pane" aria-label="Autres travaux">
-      <div class="trav-rail">
-        @for (t of otherTravaux; track t.id; let idx = $index) {
-          <article class="is-small" (click)="swapToMain(idx)">
-            <div class="trav-card">
-              <div class="trav-media">
-                <img
-                  [src]="apiUrl + t.photo_principale"
-                  [alt]="t.titre"
-                  loading="lazy"
-                  (load)="onImgLoad($event)"
-                  (error)="onImgError($event)"
-                />
-                <div class="trav-media-fallback">Image indisponible</div>
-              </div>
+    <!-- 🧱 GRID EDITORIALE -->
+    <section class="grid-case">
+      @for (t of displayedTravaux; track t.id) {
+        <article class="case-card" (click)="setSelected(t)">
+          <div class="case-media">
+            <img [src]="apiUrl + t.photo_principale" />
+          </div>
 
-              <div class="trav-body">
-                <div class="trav-head">
-                  <h3 class="trav-name permanent-marker-regular">{{ t.titre }}</h3>
-                  <span class="trav-status" [ngClass]="t.status" [title]="t.status"></span>
-                </div>
+          <div class="case-body">
+            <span class="case-status" [ngClass]="t.status"></span>
 
-                <!-- <small class="trav-date">
-                  {{ t.date_debut ? (t.date_debut | date: 'dd/MM/yyyy') : '—' }}
-                </small> -->
+            <h3>{{ t.titre }}</h3>
 
-                <!-- <p class="trav-desc">{{ t.description || '—' }}</p> -->
+            <p>{{ t.description | slice: 0 : 90 }}...</p>
 
-                <!-- si tu veux garder le bouton détails sans déclencher le swap -->
-                <!-- <button
-                  type="button"
-                  class="btn btn-sm btn-outline-light mt-auto align-self-start"
-                  (click)="$event.stopPropagation(); selectTravaux(t)"
-                >
-                  Détails
-                </button> -->
-              </div>
+            <div class="case-footer">
+              <span>{{ t.localisation }}</span>
+              <span>{{ t.date_debut | date }}</span>
             </div>
+          </div>
+        </article>
+      }
+      @if (!showAll && remainingCount > 0) {
+        <article class="case-card more-card" (click)="showAll = true">
+          <img
+            [src]="apiUrl + filteredTravaux()[maxVisibleCards - 1].photo_principale"
+            class="more-bg"
+          />
 
-            <div class="trav-mini">
-              <div class="mini-card">
-                <div class="mini-value">{{ t.localisation || '—' }}</div>
-              </div>
-
-              <div class="mini-card">
-                <div class="mini-value">
-                  {{ t.created_at ? (t.created_at | date: 'dd/MM/yyyy') : '—' }}
-                </div>
-              </div>
-            </div>
-          </article>
-        }
-      </div>
+          <div class="more-overlay">
+            <span class="more-count"> +{{ remainingCount }} </span>
+            <small> Autres travaux </small>
+          </div>
+        </article>
+      }
     </section>
   </div>
 

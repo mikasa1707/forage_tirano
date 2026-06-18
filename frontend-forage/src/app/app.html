@@ -1,7 +1,25 @@
 @if (loadingService.loading()) {
-<div class="global-loader">
-  <div class="spinner-border text-primary"></div>
-</div>
+  <div class="global-loader">
+    <div class="forage-loader">
+
+      <div class="tube"></div>
+
+      <div class="ground"></div>
+
+      <div class="water">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="loader-text">
+        Chargement...
+      </div>
+
+    </div>
+  </div>
 }
 
-<router-outlet>
+<router-outlet />

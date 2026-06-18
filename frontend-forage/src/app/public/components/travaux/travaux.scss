@@ -4,670 +4,465 @@
 .permanent-marker-regular {
   font-family: 'Permanent Marker', cursive;
   font-weight: 400;
-  font-style: normal;
   letter-spacing: 1px;
 }
 
 /* =========================
-   PAGE + BG overlay
+   PAGE BASE
 ========================= */
-.travaux-page {
-  position: relative;
-  padding: 40px 10px 18px;
-  background: url('/images/fond.jpg') center/cover no-repeat fixed;
-  overflow: hidden;
-}
-
-.travaux-page::before {
-  content: '';
-  position: absolute;
-  inset: 0;
+.trav-projets {
   background: #00000096; /* voile transparent */
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  pointer-events: none;
-  z-index: 0;
+  backdrop-filter: blur(5px); /* flou */
+  -webkit-backdrop-filter: blur(5px); /* Safari */
+  color: white;
+  padding: 80px 5vw;
 }
 
-.travaux-title {
-  position: relative;
-  z-index: 1;
-  width: min(1200px, 92vw);
-  margin: 50px auto 12px;
-  color: #fff;
-  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+/* =========================
+   HEADER + FILTERS
+========================= */
+.trav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.is-small {
-  scroll-snap-align: start;
+.trav-title {
+  font-size: 48px;
+  letter-spacing: 2px;
+  margin: 0;
+}
 
-  display: grid;
-  grid-template-rows: 25vh auto;
+.trav-filters {
+  display: flex;
+  justify-content: center;
   gap: 12px;
+  flex-wrap: wrap;
+}
 
-  padding: 1px;
-  border-radius: 5px;
-
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.34);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
-
+.trav-filters button {
+  background: transparent;
+  border: 1px solid #ffffff1f;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: #ffffffbf;
   cursor: pointer;
+  transition: 0.25s ease;
+  font-size: 14px;
 }
+
+.trav-filters button:hover {
+  transform: translateY(-1px);
+  border-color: #ffffff4d;
+  color: white;
+}
+
+.trav-filters button.active {
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* En cours */
+.trav-filters button[data-status='en_cours'].active {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border-color: rgba(52, 152, 219, 0.5);
+}
+
+/* Terminé */
+.trav-filters button[data-status='termine'].active {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border-color: rgba(46, 204, 113, 0.5);
+}
+
+/* Planifié */
+.trav-filters button[data-status='planifie'].active {
+  background: rgba(241, 196, 15, 0.15);
+  color: #f1c40f;
+  border-color: rgba(241, 196, 15, 0.5);
+}
+
 /* =========================
-   RAIL X (scroll horizontal)
+   HERO CASE STUDY
 ========================= */
-.travaux-x {
+.hero-case {
+  height: 80vh;
+  margin-bottom: 80px;
+}
+
+.hero-media {
   position: relative;
-  z-index: 1;
-
-  width: min(1200px, 92vw);
-  margin: 0 auto;
-
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 420px;
-  gap: 18px;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  padding: 12px 10px 20px;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: 10px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-.travaux-x::-webkit-scrollbar {
-  height: 10px;
-}
-.travaux-x::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-}
-.travaux-x::-webkit-scrollbar-thumb {
-  background: rgba(31, 110, 255, 0.55);
-  border-radius: 999px;
-}
-.travaux-x::-webkit-scrollbar-thumb:hover {
-  background: rgba(31, 110, 255, 0.72);
-}
-
-/* Firefox fallback */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(31, 110, 255, 0.55) rgba(255, 255, 255, 0.16);
-}
-
-/* =========================
-   ✅ COLONNE (1 travaux)
-   1 grande carte + 2 mini en bas
-========================= */
-.trav-col {
-  scroll-snap-align: start;
-
-  display: grid;
-  grid-template-rows: 65vh auto;
-  gap: 12px;
-
-  padding: 1px;
-  border-radius: 5px;
-
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.34);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.trav-col:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.24);
-  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
-}
-
-/* =========================
-   GRANDE CARTE (bento)
-========================= */
-.trav-card {
-  border-radius: 5px;
-  overflow: hidden;
-
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(8px);
-
-  display: grid;
-  grid-template-rows: 70% 30%;
-
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
-}
-
-.trav-media {
-  position: relative;
+  height: 100%;
+  border-radius: 20px;
   overflow: hidden;
 }
 
-.trav-media img {
+.hero-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transform: scale(1);
-  transition: transform 0.35s ease;
+  transform: scale(1.02);
 }
 
-/* zoom doux */
-.trav-col:hover .trav-media img {
-  transform: scale(1.06);
-}
-
-/* gradient overlay (moderne) */
-.trav-media::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 52%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
-  pointer-events: none;
-  opacity: 0.9;
-}
-
-/* fallback si image cassée */
-.trav-media-fallback {
+/* overlay cinematic */
+.hero-overlay {
   position: absolute;
   inset: 0;
-  display: none;
-  place-items: center;
-  color: rgba(255, 255, 255, 0.75);
-  background: rgba(255, 255, 255, 0.08);
-  font-size: 14px;
-}
-.trav-media img.is-broken {
-  display: none;
-}
-.trav-media img.is-broken + .trav-media-fallback {
-  display: grid;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.1));
 }
 
-.trav-body {
-  padding: 14px 14px 12px;
-  color: #fff;
-  height: 40vh;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* content flottant */
+.hero-content {
+  position: absolute;
+  bottom: 60px;
+  left: 60px;
+  max-width: 600px;
 }
 
-.trav-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+.hero-content h2 {
+  font-size: 34px;
+  margin: 10px 0;
 }
 
-.trav-name {
-  margin: 0;
-  font-size: 20px;
-  line-height: 1.05;
-  text-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
-}
-
-.trav-date {
-  opacity: 0.78;
-}
-
-/* clamp description */
-.trav-desc {
-  margin: 6px 0 0;
-  overflow: hidden;
-
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+.hero-content p {
+  opacity: 0.85;
+  line-height: 1.5;
 }
 
 /* =========================
-   STATUS (barre à droite)
+   STATUS BADGE (GLOBAL CLEAN)
 ========================= */
-.trav-status {
-  width: 10px;
-  height: 24px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
-}
-
-.trav-status.termine {
-  background: rgba(46, 204, 113, 0.85);
-}
-.trav-status.en_cours {
-  background: rgba(52, 152, 219, 0.85);
-}
-.trav-status.planifie {
-  background: rgba(241, 196, 15, 0.9);
-}
-.trav-status.annule {
-  background: rgba(231, 76, 60, 0.9);
-}
-
-/* =========================
-   2 MINI CARTES en bas
-========================= */
-.trav-mini {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #fff;
-}
-
-.is-small .trav-mini {
-  display: grid;
-  grid-template-columns: none;
-  gap: 1px;
-  color: #fff;
-}
-
-.is-small .mini-card {
-  border: 0;
-  padding: 2px;
-  background: rgba(0, 0, 0, 0);
-  padding-bottom: 10px;
-  text-align: center;
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-.mini-card {
-  flex-grow: 3;
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  min-height: 42px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.trav-col:hover .mini-card {
-  border-color: rgba(255, 255, 255, 0.24);
-  background: rgba(0, 0, 0, 0.28);
-}
-
-.mini-label {
+.hero-badge,
+.case-status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
   font-size: 12px;
-  opacity: 0.72;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
-.mini-value {
-  margin-top: 6px;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
+/* statuses */
+.en_cours {
+  background: #3498db26;
+  color: #3498db;
+  border: 1px solid #3498db66;
 }
 
-.mini-btn {
-  height: 42px; /* même hauteur que les mini-card */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.termine {
+  background: #2ecc7126;
+  color: #2ecc71;
+  border: 1px solid #2ecc7166;
+}
+
+.planifie {
+  background: #f1c40f2e;
+  color: #f1c40f;
+  border: 1px solid #f1c40f66;
+}
+
+.annule {
+  background: #e74c3c26;
+  color: #e74c3c;
+  border: 1px solid #e74c3c66;
 }
 
 /* =========================
-   Responsive
+   GRID CASE STUDY
 ========================= */
-@media (max-width: 998px) {
-  .travaux-x {
-    grid-auto-columns: 330px;
-  }
-  .trav-col {
-    grid-template-rows: 420px auto;
-  }
-  .trav-name {
-    font-size: 18px;
-  }
+.grid-case {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
 }
 
-@media (max-width: 768px) {
-  .travaux-x {
-    grid-auto-columns: 280px;
-  }
-  .trav-col {
-    grid-template-rows: 400px auto;
-  }
+/* card */
+.case-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-@media (max-width: 480px) {
-  .travaux-x {
-    grid-auto-columns: 240px;
-  }
-  .trav-col {
-    grid-template-rows: 380px auto;
-  }
+.case-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* image */
+.case-media img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.case-card:hover .case-media img {
+  transform: scale(1.05);
+}
+
+/* content */
+.case-body {
+  padding: 20px;
+}
+
+.case-body h3 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.case-body p {
+  opacity: 0.75;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.case-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 /* =========================
-   MODAL OVERLAY (photos)
+   MODAL (clean + premium)
 ========================= */
 .custom-modal {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: rgba(0, 0, 0, 0.68);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-
-  animation: modalFadeIn 0.25s ease-out;
 }
 
 .modal-content {
   width: min(1100px, 92vw);
   max-height: 90vh;
-
-  background: rgba(15, 15, 15, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
+  background: rgba(15, 15, 15, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-
-  box-shadow: 0 22px 80px rgba(0, 0, 0, 0.55);
-
-  animation: modalScaleIn 0.28s ease-out;
 }
 
 .modal-content-head {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.modal-content-head i {
-  font-size: 20px;
-  color: #fff;
-  cursor: pointer;
-  opacity: 0.85;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-.modal-content-head i:hover {
-  opacity: 1;
-  transform: scale(1.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-content-body {
   padding: 20px;
   overflow-y: auto;
-
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 18px;
-}
-
-.modal-content-body::-webkit-scrollbar {
-  width: 8px;
-}
-.modal-content-body::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-}
-.modal-content-body::-webkit-scrollbar-thumb {
-  background: rgba(31, 110, 255, 0.6);
-  border-radius: 10px;
-}
-.modal-content-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(31, 110, 255, 0.75);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
 }
 
 /* =========================
-   PHOTO CARD (carré)
+   PHOTO CARD
 ========================= */
 .trav-photo {
   position: relative;
-  cursor: pointer;
   border-radius: 12px;
   overflow: hidden;
-
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease;
-  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  aspect-ratio: 1/1;
+  transition: 0.25s;
 }
 
 .trav-photo:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px);
 }
 
-.trav-photo-img {
+.trav-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 .trav-photo-legend {
   position: absolute;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-
-  padding: 8px 10px;
-  font-size: 13px;
-  color: #fff;
-
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0));
+  padding: 8px;
+  font-size: 12px;
+  color: white;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: 0.2s;
 }
+
 .trav-photo:hover .trav-photo-legend {
   opacity: 1;
 }
 
 /* =========================
-   ANIMATIONS
+   RESPONSIVE
 ========================= */
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
+@media (max-width: 1024px) {
+  .grid-case {
+    grid-template-columns: repeat(2, 1fr);
   }
-  to {
-    opacity: 1;
+
+  .hero-content {
+    left: 30px;
+    bottom: 30px;
+  }
+
+  .hero-content h2 {
+    font-size: 26px;
   }
 }
 
-@keyframes modalScaleIn {
-  from {
-    transform: scale(0.94) translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-}
-
-/* =========================
-   RESPONSIVE MODAL
-========================= */
 @media (max-width: 768px) {
-  .modal-content {
-    width: 96vw;
-    max-height: 92vh;
+  .trav-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .modal-content-body {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
+  .trav-title {
+    font-size: 34px;
+  }
+
+  .hero-case {
+    height: 60vh;
+  }
+
+  .grid-case {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-content {
+    left: 20px;
+    bottom: 20px;
+    max-width: 90%;
   }
 }
 
 @media (max-width: 480px) {
-  .modal-content-body {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  .trav-projets {
+    padding: 50px 4vw;
+  }
+
+  .hero-content h2 {
+    font-size: 22px;
   }
 }
 
-/* layout global */
-.trav-layout {
+.trav-filters-sticky {
   position: relative;
-  z-index: 1;
-  width: min(90vw);
-  margin: 0 auto;
+  top: 0;
+  z-index: 50;
 
-  display: grid;
-  grid-template-columns: 520px 1fr;
-  // gap: 18px;
-  align-items: start;
+  padding: 15px;
+  border-radius: 1em;
+
+  background: rgba(11, 11, 15, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-/* cadre 1 sticky */
-.selected-pane {
-  position: sticky;
-  top: 120px; /* ajuste selon ton header */
-  height: calc(100vh - 140px); /* important */
+.travaux-page {
+  position: relative;
+  padding: 0px;
+  background: url('/images/fond.jpg') center/cover no-repeat fixed;
+  /* ❌ supprimer overflow hidden */
 }
 
-/* ✅ partie droite scroll en Y */
-.rail-pane {
-  height: calc(90vh - 140px); /* même logique que gauche */
-  overflow-y: auto;
-  overflow-x: hidden;
-  // padding-right: 6px; /* évite que la scrollbar colle */
-  overscroll-behavior: contain;
+.en_cours_btn.active {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.5);
 }
 
-/* ✅ grille verticale (2 colonnes) */
-.trav-rail {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(130px, 1fr));
-  gap: 5px;
-  padding: 0px 10px 20px;
+.termine_btn.active {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.5);
 }
 
-/* scrollbar sympa (optionnel) */
-.rail-pane::-webkit-scrollbar {
-  width: 10px;
+.planifie_btn.active {
+  background: rgba(241, 196, 15, 0.15);
+  color: #f1c40f;
+  border: 1px solid rgba(241, 196, 15, 0.5);
 }
-.rail-pane::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.16);
+
+.show-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.show-more-btn {
+  border: none;
+  padding: 14px 24px;
   border-radius: 999px;
-}
-.rail-pane::-webkit-scrollbar-thumb {
-  background: rgba(31, 110, 255, 0.55);
-  border-radius: 999px;
-}
-.rail-pane::-webkit-scrollbar-thumb:hover {
-  background: rgba(31, 110, 255, 0.72);
-}
 
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
 
-@media (max-width: 1080px) {
-  .trav-layout {
-    display: block;
-  }
+  backdrop-filter: blur(12px);
 
-  .selected-pane {
-    position: relative;
-    top: 0;
-    height: auto;
-  }
-
-  /* ✅ seul endroit qui scroll en X */
-  .rail-pane {
-    height: auto !important;
-    max-height: none !important;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    padding-top: 10px; /* place pour scrollbar */
-  }
-
-  /* ✅ le rail ne scroll PAS, il aligne juste */
-  .trav-rail {
-    display: flex !important;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 16px;
-
-    grid-template-columns: none !important;
-    grid-auto-flow: unset !important;
-
-    overflow: visible; /* important */
-  }
-
-  /* ✅ item flex = enfant direct (le plus sûr) */
-  .trav-rail > * {
-    flex: 0 0 320px;
-    width: 320px;
-    min-width: 320px;
-    max-width: 320px;
-  }
-
-  /* ✅ si tu veux une hauteur fixe propre */
-  .trav-rail > * {
-    height: 260px;
-  }
-
-  .is-small {
-    height: 100%;
-    grid-template-rows: auto 1fr;
-  }
-
-  .is-small .trav-media {
-    aspect-ratio: 16 / 9;
-  }
-
-  .is-small .trav-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  transition: 0.25s ease;
 }
 
-@media (max-width: 480px) {
-  .trav-rail {
-    gap: 10px;
-  }
-
-  .trav-rail > * {
-    flex: 0 0 180px;     /* ✅ override aussi le basis */
-    width: 180px;        /* ✅ override width 320 */
-    min-width: 180px;
-    max-width: 180px;    /* ✅ override max-width 320 */
-    height: 200px;
-  }
+.show-more-btn:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.14);
 }
 
+.more-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
 
+.more-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(2px) brightness(.4);
+}
 
+.more-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(4px);
+}
+
+.more-count {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+}
+
+.more-overlay small {
+  color: white;
+  opacity: .9;
+  font-size: 1rem;
+}
+
+.more-card:hover .more-bg {
+  transform: scale(1.05);
+  transition: .3s;
+}
