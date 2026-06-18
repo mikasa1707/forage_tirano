@@ -25,29 +25,6 @@ import { AuthModule } from './auth/auth.module';
     EquipesModule,
     ServicesModule,
     ContactModule,
-    // TypeOrmModule.forRoot({
-    //   type: 'mysql',
-    //   host: 'localhost',
-    //   port: 3306,
-    //   username: 'root',
-    //   password: '',
-    //   database: 'forage',
-    //   entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
-    //   synchronize: false,
-    // }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mysql',
-    //   url: process.env.DATABASE_URI,
-    //   entities: [Travaux, TravauxPhoto, Equipe, Service, User, Contact],
-    //   synchronize: true,
-    // }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads'),
-    //   serveRoot: '/uploads',
-    //   serveStaticOptions: {
-    //     index: false, // 🔥 IMPORTANT
-    //   },
-    // }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
