@@ -63,9 +63,9 @@
 // }
 
 /* Fermeture slide */
-.sidebar-closed .sidebar {
-  transform: translateX(-100%);
-}
+// .sidebar-closed .sidebar {
+//   transform: translateX(-100%);
+// }
 
 /* Logo */
 .logo {
@@ -80,7 +80,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 10px;
   border-radius: 10px;
   color: #cbd5e1;
   text-decoration: none;
@@ -88,8 +88,14 @@
 }
 
 .menu-item i {
-  width: 20px;
-  text-align: center;
+  width: 32px;
+  min-width: 32px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 18px;
 }
 
 .menu-item:hover {
@@ -113,6 +119,10 @@
   display: none;
 }
 
+.sidebar-closed .menu-item {
+  padding: 10px 0px;
+}
+
 /* ---- Burger animé ---- */
 .burger {
   width: 30px;
@@ -131,7 +141,7 @@
 }
 
 .sidebar-closed .burger span:nth-child(1) {
-  transform: rotate(45deg) translateY(10px);
+  transform: rotate(45deg) translateY(15px);
 }
 
 .sidebar-closed .burger span:nth-child(2) {
@@ -139,7 +149,7 @@
 }
 
 .sidebar-closed .burger span:nth-child(3) {
-  transform: rotate(-45deg) translateY(-10px);
+  transform: rotate(-45deg) translateY(-15px);
 }
 
 /* ---- Contenu ---- */

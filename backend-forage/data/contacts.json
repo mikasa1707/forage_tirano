@@ -28,5 +28,15 @@
     "message": "Bonjour,\nJe souhaite des informations.\nMerci.",
     "status": "traite",
     "createdAt": "2026-06-17T17:33:26.363Z"
+  },
+  {
+    "id": 4,
+    "nom": "RAVEROSON",
+    "email": "raveroson73@gmail.com",
+    "telephone": "0341044080",
+    "sujet": "Partenariat",
+    "message": "Bonjour,\nCollaboration.\nMerci.",
+    "status": "nouveau",
+    "createdAt": "2026-06-18T06:40:14.501Z"
   }
 ]
