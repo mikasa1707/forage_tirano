@@ -13,9 +13,8 @@ export class ServicesService {
 
   async findAllActive() {
     const data = await this.storage.read(this.filePath);
-
     return data
-      .filter(s => s.is_active === 1)
+      .filter(s => Number(s.is_active) === 1)
       .sort((a, b) =>
         new Date(b.created_at).getTime() -
         new Date(a.created_at).getTime()

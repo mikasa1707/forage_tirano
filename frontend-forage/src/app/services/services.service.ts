@@ -19,7 +19,7 @@ export class ServicesApiService {
 
   // 🔓 PUBLIC
   getPublic(): Observable<ServiceItem[]> {
-    return this.http.get<any[]>(this._service).pipe(
+    return this.http.get<any[]>(`${this._service}`).pipe(
       map((rows) =>
         (rows ?? []).map((r) => ({
           id: r.id,
