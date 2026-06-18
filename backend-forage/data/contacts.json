@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "nom": "Raveroson",
+    "email": "raveroson73@gmail.com",
+    "telephone": "0324124259",
+    "sujet": "Demande de devis",
+    "message": "Bonjour,\nJe souhaite un devis.\nMerci.",
+    "status": "traite",
+    "createdAt": "2026-06-17T17:06:41.087Z"
+  },
+  {
+    "id": 2,
+    "nom": "Raveroson",
+    "email": "raveroson73@gmail.com",
+    "telephone": "0324124259",
+    "sujet": "Réclamation",
+    "message": "Bonjour,\nRéclamation.\nMerci.",
+    "status": "traite",
+    "createdAt": "2026-06-17T17:30:22.704Z"
+  },
+  {
+    "id": 3,
+    "nom": "Raveroson",
+    "email": "raveroson73@gmail.com",
+    "telephone": "0324124259",
+    "sujet": "Demande de renseignement",
+    "message": "Bonjour,\nJe souhaite des informations.\nMerci.",
+    "status": "traite",
+    "createdAt": "2026-06-17T17:33:26.363Z"
+  },
+  {
+    "id": 4,
+    "nom": "RAVEROSON",
+    "email": "raveroson73@gmail.com",
+    "telephone": "0341044080",
+    "sujet": "Partenariat",
+    "message": "Bonjour,\nCollaboration.\nMerci.",
+    "status": "nouveau",
+    "createdAt": "2026-06-18T06:40:14.501Z"
+  }
+]
