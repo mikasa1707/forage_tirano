@@ -3,7 +3,7 @@ import { ContactService } from './contact.service';
 import { ContactController } from './contact.controller';
 import { MessageGateway } from './message.gateway';
 import { NotificationGateway } from './notification.gateway';
-import { StorageModule } from 'data/storage.module';
+import { StorageModule } from 'src/storage.module';
 
 @Module({
   imports: [StorageModule],

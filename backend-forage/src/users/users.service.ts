@@ -7,7 +7,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import * as path from 'path';
 
-import { JsonStorageService } from '../../data/json-storage.service';
+import { JsonStorageService } from '../json-storage.service';
 import { Role, User } from './user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

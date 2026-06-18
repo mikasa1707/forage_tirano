@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as path from 'path';
-import { JsonStorageService } from '../../data/json-storage.service';
+import { JsonStorageService } from '../json-storage.service';
 import { Equipe } from './equipe.interface';
 
 @Injectable()

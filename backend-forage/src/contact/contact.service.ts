@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import * as path from 'path';
-import { JsonStorageService } from '../../data/json-storage.service';
+import { JsonStorageService } from '../json-storage.service';
 import { Contact } from './contact.interface';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { MessageGateway } from './message.gateway';

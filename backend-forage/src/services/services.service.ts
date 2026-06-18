@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateServiceDto } from './create-service.dto';
 import { UpdateServiceDto } from './update-service.dto';
-import { JsonStorageService } from '../../data/json-storage.service';
+import { JsonStorageService } from '../json-storage.service';
 import { Service } from './service.interface';
 import * as path from 'path';
 

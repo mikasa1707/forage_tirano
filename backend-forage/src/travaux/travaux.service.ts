@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { JsonStorageService } from '../../data/json-storage.service';
+import { JsonStorageService } from '../json-storage.service';
 import { Travaux } from './travaux.interface';
 import * as path from 'path';
 
