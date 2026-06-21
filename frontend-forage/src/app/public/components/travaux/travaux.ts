@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Gallery } from '../../../shared/gallery/gallery';
 import { TravauxApi } from '../../../services/travaux.service';
-import { TravauxModel, TravauxPhoto } from '../../../models/travaux.model';
+import { TravauxModel, TravauxMedia } from '../../../models/travaux.model';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -17,7 +17,7 @@ export class Travaux implements OnInit {
   travaux: TravauxModel[] = [];
 
   selectedTravaux!: TravauxModel;
-  filteredPhotos: TravauxPhoto[] = [];
+  filteredPhotos: TravauxMedia[] = [];
 
   showModal = false;
   showGallery = false;
@@ -30,11 +30,13 @@ export class Travaux implements OnInit {
   loading = false;
   errorMsg = '';
   filter: string = 'all';
+  selectedTrav: TravauxModel | null = null;
+  isPlaying = false;
 
   constructor(
     private api: TravauxApi,
     private cdr: ChangeDetectorRef,
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.load();
@@ -52,9 +54,9 @@ export class Travaux implements OnInit {
 
         if (this.travaux.length) {
           this.selectedTravaux = this.travaux[0];
-          this.filteredPhotos = this.travaux[0].photos ?? [];
+          this.filteredPhotos = this.travaux[0].medias ?? [];
         }
-
+        this.selectedTrav = this.travaux?.length ? this.travaux[0] : null;
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -69,7 +71,7 @@ export class Travaux implements OnInit {
 
   selectTravaux(travaux: TravauxModel) {
     this.selectedTravaux = travaux;
-    this.filteredPhotos = travaux.photos ?? [];
+    this.filteredPhotos = travaux.medias ?? [];
     this.showModal = true;
   }
 
@@ -97,9 +99,9 @@ export class Travaux implements OnInit {
     img.classList.remove('is-broken'); // ✅ important après un swap
   }
 
-  get selectedTrav(): any | null {
-    return this.travaux?.length ? this.travaux[0] : null;
-  }
+  // get selectedTrav(): any | null {
+  //   return this.travaux?.length ? this.travaux[0] : null;
+  // }
 
   get otherTravaux(): any[] {
     return this.travaux?.length ? this.travaux.slice(1) : [];
@@ -115,7 +117,9 @@ export class Travaux implements OnInit {
 
   setSelected(t: any) {
     this.selectedTravaux = t;
-    this.filteredPhotos = t.photos ?? [];
+    this.selectedTrav = this.selectedTravaux;
+    console.log(this.selectedTravaux);
+    this.filteredPhotos = t.medias ?? [];
     const el = document.getElementById('hero-case-study');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -128,7 +132,7 @@ export class Travaux implements OnInit {
 
   filteredTravaux() {
     if (this.filter === 'all') return this.travaux;
-    return this.travaux.filter(t => t.status === this.filter);
+    return this.travaux.filter((t) => t.status === this.filter);
   }
 
   get displayedTravaux() {
@@ -142,9 +146,16 @@ export class Travaux implements OnInit {
   }
 
   get remainingCount(): number {
-    return Math.max(
-      this.filteredTravaux().length - (this.maxVisibleCards - 1),
-      0
-    );
+    return Math.max(this.filteredTravaux().length - (this.maxVisibleCards - 1), 0);
+  }
+
+  togglePlay(video: HTMLVideoElement) {
+    if (video.paused) {
+      video.play();
+      this.isPlaying = true;
+    } else {
+      video.pause();
+      this.isPlaying = false;
+    }
   }
 }

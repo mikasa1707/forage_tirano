@@ -1,10 +1,3 @@
-export interface TravauxPhoto {
-  id: number;
-  image: string;
-  legenda?: string | null;
-  travaux_id: number;
-}
-
 export interface TravauxModel {
   id: number;
   titre: string;
@@ -14,8 +7,14 @@ export interface TravauxModel {
   date_fin?: string | null;
   localisation?: string | null;
   photo_principale?: string | null;
-  photos: TravauxPhoto[];
+  medias: TravauxMedia[];
   created_at: string;
 }
 
-
+export interface TravauxMedia {
+  id: number;
+  media: string;
+  type: 'image' | 'video';
+  legenda?: string | null;
+  thumbnail?: string | null;
+}

@@ -1,5 +1,5 @@
 export class CreateTravauxDto {
-  titre: string;
+  titre!: string;
   description?: string;
   status?: 'en_cours' | 'termine' | 'planifie';
   date_debut?: string;
@@ -10,4 +10,5 @@ export class CreateTravauxDto {
   // index de l'image principale parmi les fichiers uploadés
   // ex: "0"
   photoPrincipaleIndex?: string;
+  legends?: string | string[];
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TravauxModel, TravauxPhoto } from '../models/travaux.model';
+import { TravauxModel, TravauxMedia } from '../models/travaux.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -66,7 +66,7 @@ export class TravauxApi {
     return this.http.delete<TravauxModel>(`${this.base}/${travauxId}/photos/${photoId}`);
   }
 
-  photos(travauxId: number): Observable<TravauxPhoto[]> {
-    return this.http.get<TravauxPhoto[]>(`${this.base}/${travauxId}/photos`);
+  photos(travauxId: number): Observable<TravauxMedia[]> {
+    return this.http.get<TravauxMedia[]>(`${this.base}/${travauxId}/photos`);
   }
 }

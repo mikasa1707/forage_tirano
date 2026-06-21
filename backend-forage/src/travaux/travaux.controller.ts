@@ -48,7 +48,6 @@ export class TravauxController {
     @Body() dto: UpdateTravauxDto,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
-
     return this.service.update(id, dto, files ?? []);
   }
 

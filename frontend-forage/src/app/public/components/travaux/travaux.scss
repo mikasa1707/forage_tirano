@@ -108,6 +108,13 @@
   transform: scale(1.02);
 }
 
+.hero-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+}
+
 /* overlay cinematic */
 .hero-overlay {
   position: absolute;
@@ -197,6 +204,14 @@
 
 /* image */
 .case-media img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+
+.case-media video {
   width: 100%;
   height: 220px;
   object-fit: cover;

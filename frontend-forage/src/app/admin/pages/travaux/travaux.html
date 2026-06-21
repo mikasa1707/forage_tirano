@@ -124,7 +124,7 @@
 
         <label class="oai-field">
           <span class="oai-label">Date début</span>
-          <input class="oai-input" type="date" [min]="today" formControlName="date_debut" />
+          <input class="oai-input" type="date" formControlName="date_debut" />
         </label>
 
         <label class="oai-field">
@@ -156,11 +156,11 @@
         <div class="section col2">
           <div class="sectionTitle">Photos</div>
 
-          @if (editing && existingPhotos.length > 0) {
+          @if (editing && existingMedias.length > 0) {
             <div class="sectionTitle">Photos existantes</div>
 
             <div class="thumbs">
-              @for (ph of existingPhotos; track ph.id) {
+              @for (ph of existingMedias; track ph.id) {
                 <div class="thumbItem">
                   <!-- bouton supprimer -->
                   @if (canEdit()) {
@@ -177,13 +177,13 @@
                   <button
                     type="button"
                     class="thumb"
-                    (click)="setExistingMain(ph.image)"
-                    [class.main]="imgUrl(ph.image) === imgUrl(existingMainUrl)"
+                    (click)="setExistingMain(ph.media)"
+                    [class.main]="imgUrl(ph.media) === imgUrl(existingMainUrl)"
                     title="Définir comme principale"
                     [disabled]="!canEdit()"
                   >
-                    <img [src]="imgUrl(ph.image)" />
-                    @if (imgUrl(ph.image) === imgUrl(existingMainUrl)) {
+                    <img [src]="imgUrl(ph.media)" />
+                    @if (imgUrl(ph.media) === imgUrl(existingMainUrl)) {
                       <span>Principale</span>
                     }
                   </button>
@@ -194,7 +194,12 @@
           @if (canEdit()) {
             <label class="oai-field">
               <span class="oai-label">Ajouter des photos</span>
-              <input type="file" multiple accept="image/*" (change)="onFilesChange($event)" />
+              <input
+                type="file"
+                multiple
+                accept="image/*,video/*"
+                (change)="onFilesChange($event)"
+              />
               <small class="oai-hint">
                 La première photo sera utilisée comme photo principale
               </small>
@@ -230,7 +235,7 @@
         </button> -->
         @if (canEdit()) {
           <button class="oai-btn oai-btn--ghost" type="button" (click)="nextOrSave()">
-            @if (existingPhotos.length > 0 || selectedFiles.length > 0) {
+            @if (existingMedias.length > 0 || selectedFiles.length > 0) {
               Suivant
             } @else {
               Enregistrer

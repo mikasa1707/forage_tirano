@@ -35,7 +35,22 @@
     @if (selectedTrav) {
       <section id="hero-case-study" class="hero-case">
         <div class="hero-media">
-          <img [src]="apiUrl + selectedTrav.photo_principale" />
+          @if (selectedTrav.medias[0].type === 'image') {
+            <img [src]="apiUrl + selectedTrav.medias[0].media" />
+          } @else {
+            <div class="video-wrapper">
+              <video
+                #videoPlayer
+                [src]="apiUrl + selectedTrav.medias[0].media"
+                muted
+                autoplay
+                playsinline
+                preload="metadata"
+                class="thumb-video"
+              ></video>
+            </div>
+          }
+
           <div class="hero-overlay"></div>
 
           <div class="hero-content">
@@ -67,7 +82,17 @@
       @for (t of displayedTravaux; track t.id) {
         <article class="case-card" (click)="setSelected(t)">
           <div class="case-media">
-            <img [src]="apiUrl + t.photo_principale" />
+            <!-- <img [src]="apiUrl + t.photo_principale" /> -->
+            @if (t.medias[0].type === 'image') {
+              <img [src]="apiUrl + t.medias[0].media" />
+            } @else {
+              <video
+                [src]="apiUrl + t.medias[0].media"
+                muted
+                preload="metadata"
+                class="thumb-video"
+              ></video>
+            }
           </div>
 
           <div class="case-body">
@@ -111,7 +136,7 @@
         <div class="modal-content-body">
           @for (travphoto of filteredPhotos; track $index; let i = $index) {
             <div class="trav-photo" (click)="openGallery(i)">
-              <img class="trav-photo-img" [src]="apiUrl + travphoto.image" alt="" />
+              <img class="trav-photo-img" [src]="apiUrl + travphoto.media" alt="" />
               <span class="trav-photo-legend">{{ travphoto.legenda }}</span>
             </div>
           }

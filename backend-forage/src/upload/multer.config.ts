@@ -1,16 +1,33 @@
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Request } from 'express';
-import { FileFilterCallback } from 'multer';
 
-export const imageFileFilter = (
+export const mediaFileFilter = (
   req: Request,
   file: Express.Multer.File,
   cb: (error: Error | null, acceptFile: boolean) => void,
 ) => {
-  if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif)$/)) {
-    return cb(null, false);
+  const allowedMimeTypes = [
+    // Images
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+
+    // Vidéos
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime', // mov
+  ];
+
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return cb(
+      new Error(`Type de fichier non autorisé : ${file.mimetype}`),
+      false,
+    );
   }
+
   cb(null, true);
 };
 
@@ -19,12 +36,15 @@ const createMulterConfig = (destination: string) => ({
     destination,
     filename: (req, file, cb) => {
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+
       cb(null, uniqueSuffix + extname(file.originalname));
     },
   }),
-  fileFilter: imageFileFilter,
+
+  fileFilter: mediaFileFilter,
+
   limits: {
-    fileSize: 300 * 1024 * 1024, // 5MB max
+    fileSize: 300 * 1024 * 1024, // 300 MB
   },
 });
 

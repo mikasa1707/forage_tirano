@@ -1,9 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormsModule,
+} from '@angular/forms';
 
 import { TravauxApi } from '../../../services/travaux.service';
-import { TravauxModel, TravauxPhoto } from '../../../models/travaux.model';
+import { TravauxModel, TravauxMedia } from '../../../models/travaux.model';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth.service';
 
@@ -32,11 +38,12 @@ export class Travaux implements OnInit {
   previews: string[] = [];
   mainIndex = 0;
 
+  mediaTypes: ('image' | 'video')[] = [];
   legends: string[] = []; // ✅ uniquement pour les nouvelles photos
   today = new Date().toISOString().split('T')[0];
 
   existingMainUrl: string | null = null;
-  existingPhotos: TravauxPhoto[] = [];
+  existingMedias: TravauxMedia[] = [];
 
   // ✅ liste affichée dans modal 2 (existantes + nouvelles)
   captionItems: CaptionItem[] = [];
@@ -47,7 +54,7 @@ export class Travaux implements OnInit {
     private api: TravauxApi,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    public readonly auth: AuthService
+    public readonly auth: AuthService,
   ) {
     this.form = this.fb.group({
       titre: ['', Validators.required],
@@ -115,12 +122,12 @@ export class Travaux implements OnInit {
     this.mainIndex = 0;
 
     // ✅ photos existantes
-    this.existingPhotos = t.photos ?? [];
+    this.existingMedias = t.medias ?? [];
 
-    if (!t.photos || t.photos.length === 0) {
+    if (!t.medias || t.medias.length === 0) {
       this.api.photos(t.id).subscribe({
-        next: (photos) => (this.existingPhotos = photos ?? []),
-        error: () => (this.existingPhotos = []),
+        next: (photos) => (this.existingMedias = photos ?? []),
+        error: () => (this.existingMedias = []),
       });
     }
 
@@ -136,9 +143,12 @@ export class Travaux implements OnInit {
     this.form.reset({ status: 'planifie' });
 
     this.previews.forEach((p) => URL.revokeObjectURL(p));
+
     this.selectedFiles = [];
     this.previews = [];
+    this.mediaTypes = [];
     this.legends = [];
+
     this.mainIndex = 0;
 
     this.captionModalOpen = false;
@@ -147,16 +157,27 @@ export class Travaux implements OnInit {
 
   onFilesChange(ev: Event) {
     const input = ev.target as HTMLInputElement;
-    if (!input.files) return;
 
-    this.previews.forEach((p) => URL.revokeObjectURL(p));
+    if (!input.files?.length) {
+      return;
+    }
 
-    this.selectedFiles = Array.from(input.files);
-    this.previews = this.selectedFiles.map((f) => URL.createObjectURL(f));
-    this.mainIndex = 0;
+    const newFiles = Array.from(input.files);
 
-    // ✅ 1 légende par nouvelle photo
-    this.legends = this.selectedFiles.map(() => '');
+    for (const file of newFiles) {
+      this.selectedFiles.push(file);
+
+      this.previews.push(URL.createObjectURL(file));
+
+      this.mediaTypes.push(file.type.startsWith('video/') ? 'video' : 'image');
+
+      this.legends.push('');
+    }
+
+    // si aucun média principal encore choisi
+    if (this.selectedFiles.length === newFiles.length) {
+      this.mainIndex = 0;
+    }
 
     input.value = '';
   }
@@ -172,10 +193,10 @@ export class Travaux implements OnInit {
 
   // ✅ construit la liste affichée en modal 2
   private buildCaptionItems() {
-    const existing: CaptionItem[] = (this.existingPhotos ?? []).map((ph) => ({
+    const existing: CaptionItem[] = (this.existingMedias ?? []).map((ph) => ({
       kind: 'existing',
       id: ph.id,
-      src: this.imgUrl(ph.image),
+      src: this.imgUrl(ph.media),
       value: (ph as any).legenda ?? '', // adapte si ton champ diffère
     }));
 
@@ -196,7 +217,7 @@ export class Travaux implements OnInit {
     }
 
     // aucune photo (ni existante, ni nouvelle) => save direct
-    if (this.existingPhotos.length === 0 && this.selectedFiles.length === 0) {
+    if (this.existingMedias.length === 0 && this.selectedFiles.length === 0) {
       this.saveFinal();
       return;
     }
@@ -277,10 +298,23 @@ export class Travaux implements OnInit {
   }
 
   removePhoto(travauxId: number, photoId: number) {
-    this.api.deletePhoto(travauxId, photoId).subscribe(() => this.load());
+    this.api.deletePhoto(travauxId, photoId).subscribe({
+      next: () => {
+        // retire immédiatement du tableau affiché
+        this.existingMedias = this.existingMedias.filter((p) => p.id !== photoId);
+
+        // retire aussi du travail courant
+        if (this.current) {
+          this.current.medias = this.current.medias.filter((p) => p.id !== photoId);
+        }
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error(err),
+    });
   }
 
-  confirmRemove(ph: TravauxPhoto) {
+  confirmRemove(ph: TravauxMedia) {
     if (!confirm('Supprimer cette photo ?')) return;
     this.removePhoto(this.current!.id, ph.id);
   }
@@ -290,14 +324,19 @@ export class Travaux implements OnInit {
 
     this.selectedFiles.splice(i, 1);
     this.previews.splice(i, 1);
+    this.mediaTypes.splice(i, 1);
     this.legends.splice(i, 1);
 
-    if (this.mainIndex > i) this.mainIndex--;
-    if (this.mainIndex >= this.selectedFiles.length) this.mainIndex = 0;
+    if (this.mainIndex > i) {
+      this.mainIndex--;
+    }
+
+    if (this.mainIndex >= this.selectedFiles.length) {
+      this.mainIndex = 0;
+    }
   }
 
   canCreate(): boolean {
-    this.form.disable();
     return this.auth.hasRole(['admin', 'editor']);
   }
 

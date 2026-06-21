@@ -1,274 +1,65 @@
 [
   {
-    "id": 1,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
+    "id": 3,
+    "titre": "Travaux",
+    "description": "dddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "planifie",
+    "date_debut": "2026-06-29",
+    "date_fin": "2026-07-12",
+    "localisation": "Tana",
+    "medias": [
       {
         "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
+        "media": "/uploads/travaux/1781977248136-126605340.mp4",
+        "image": "/uploads/travaux/1781977248136-126605340.mp4",
+        "type": "video"
       }
     ],
-    "created_at": "2026-02-15T10:00:00Z"
+    "created_at": "2026-06-20T13:04:25.946Z",
+    "photo_principale": "1781977248136-126605340.mp4"
   },
   {
     "id": 2,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
+    "titre": "Puits",
+    "description": "SSSAAAAAAAAAAAAAAAAAAAA",
+    "status": "en_cours",
+    "date_debut": "2026-06-15",
+    "date_fin": "2026-07-02",
+    "localisation": "Tana",
+    "photo_principale": "/uploads/travaux/1781960410247-562751896.jpg",
+    "medias": [
       {
         "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
+        "image": "/uploads/travaux/1781960410247-562751896.jpg",
+        "media": "/uploads/travaux/1781960410247-562751896.jpg",
+        "type": "image"
       },
       {
         "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
+        "image": "/uploads/travaux/1781960410253-185081339.png",
+        "media": "/uploads/travaux/1781960410253-185081339.png",
+        "type": "image"
       }
     ],
-    "created_at": "2026-02-15T10:00:00Z"
+    "created_at": "2026-06-20T13:00:10.274Z"
   },
   {
-    "id": 3,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
+    "id": 1,
+    "titre": "Forage",
+    "description": "TEEESSTTTT",
+    "status": "en_cours",
+    "date_debut": "2026-06-20",
+    "date_fin": "2026-07-10",
+    "localisation": "Tana",
+    "photo_principale": "/uploads/travaux/1781959824067-663452069.png",
+    "medias": [
       {
         "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
+        "image": "/uploads/travaux/1781959824067-663452069.png",
+        "media": "/uploads/travaux/1781959824067-663452069.png",
+        "type": "image"
       }
     ],
-    "created_at": "2026-02-15T10:00:00Z"
-  },
-  {
-    "id": 4,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
-      }
-    ],
-    "created_at": "2026-02-15T10:00:00Z"
-  },
-  {
-    "id": 5,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
-      }
-    ],
-    "created_at": "2026-02-15T10:00:00Z"
-  },
-  {
-    "id": 6,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
-      }
-    ],
-    "created_at": "2026-02-15T10:00:00Z"
-  },
-  {
-    "id": 7,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
-      }
-    ],
-    "created_at": "2026-02-15T10:00:00Z"
-  },
-  {
-    "id": 8,
-    "titre": "Forage école primaire",
-    "description": "Forage de 80m avec château d'eau",
-    "status": "termine",
-    "date_debut": "2026-01-10",
-    "date_fin": "2026-02-15",
-    "localisation": "Antsirabe",
-    "photo_principale": "/uploads/travaux/1781762746951-80241168.png",
-    "equipe_id": 1,
-    "photos": [
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746951-80241168.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746961-811521094.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746974-96129270.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762746991-472292028.png"
-      },
-      {
-        "id": 1,
-        "image": "/uploads/travaux/1781762747007-933987565.png"
-      }
-    ],
-    "created_at": "2026-02-15T10:00:00Z"
+    "created_at": "2026-06-20T12:50:24.074Z"
   }
 ]

@@ -1,9 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JsonStorageService } from '../json-storage.service';
-import { Travaux } from './travaux.interface';
+import { Travaux, TravauxMedia } from './travaux.interface';
 import * as path from 'path';
+import { CreateTravauxDto } from './create-travaux.dto';
+import { UpdateTravauxDto } from './update-travaux.dto';
 
 type PhotoUpdate = { id: number; legenda: string };
+type HasId = {
+  id: number;
+};
+// type Photo = {
+//   image: string;
+// };
+
+// type Item = {
+//   photos: Photo[];
+//   photo_principale?: string;
+// };
 
 @Injectable()
 export class TravauxService {
@@ -16,29 +29,28 @@ export class TravauxService {
 
     return data.sort(
       (a, b) =>
-        new Date(b.created_at).getTime() -
-        new Date(a.created_at).getTime(),
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
   }
 
   async findOne(id: number) {
     const data = await this.findAll();
-    const t = data.find(x => x.id === id);
+    const t = data.find((x) => x.id === id);
 
     if (!t) throw new NotFoundException('Travaux introuvable');
     return t;
   }
 
-  private newId(list: any[]) {
-    return list.length ? Math.max(...list.map(i => i.id)) + 1 : 1;
+  private newId(list: HasId[]): number {
+    return list.length ? Math.max(...list.map((i) => i.id)) + 1 : 1;
   }
 
   private newPhotoId(travaux: Travaux) {
-    const all = travaux.photos ?? [];
-    return all.length ? Math.max(...all.map(p => p.id)) + 1 : 1;
+    const all = travaux.medias ?? [];
+    return all.length ? Math.max(...all.map((p) => p.id)) + 1 : 1;
   }
 
-  async create(dto: any, files: Express.Multer.File[]) {
+  async create(dto: CreateTravauxDto, files: Express.Multer.File[]) {
     const data = await this.findAll();
 
     const newItem: Travaux = {
@@ -58,7 +70,7 @@ export class TravauxService {
 
       photo_principale: undefined,
 
-      photos: [],
+      medias: [],
 
       created_at: new Date().toISOString(),
     };
@@ -70,18 +82,22 @@ export class TravauxService {
         ? [dto.legends]
         : [];
 
-    newItem.photos = files.map((f, i) => ({
+    newItem.medias = files.map((f, i) => ({
       id: this.newPhotoId(newItem),
-      image: `/uploads/travaux/${f.filename}`,
+
+      media: `/uploads/travaux/${f.filename}`,
+
+      type: f.mimetype.startsWith('video/') ? 'video' : 'image',
+
       legenda: legends[i] ?? undefined,
     }));
 
     // main photo
     const idx = dto.photoPrincipaleIndex ? Number(dto.photoPrincipaleIndex) : 0;
 
-    if (newItem.photos.length > 0) {
-      newItem.photo_principale =
-        newItem.photos[Math.max(0, Math.min(idx, newItem.photos.length - 1))].image;
+    if (newItem.medias.length > 0) {
+      const safeIndex = Math.max(0, Math.min(idx, newItem.medias.length - 1));
+      newItem.photo_principale = newItem.medias[safeIndex].media;
     }
 
     data.push(newItem);
@@ -91,10 +107,14 @@ export class TravauxService {
     return newItem;
   }
 
-  async update(id: number, dto: any, files: Express.Multer.File[]) {
+  async update(
+    id: number,
+    dto: UpdateTravauxDto,
+    files: Express.Multer.File[],
+  ) {
     const data = await this.findAll();
 
-    const index = data.findIndex(t => t.id === id);
+    const index = data.findIndex((t) => t.id === id);
     if (index === -1) throw new NotFoundException('Travaux introuvable');
 
     const t = data[index];
@@ -119,16 +139,20 @@ export class TravauxService {
       t.photo_principale = dto.existingMainUrl;
     }
 
-    // update légendes existantes
+    // update légendes existantess
     if (dto.existingLegendUpdates) {
       try {
-        const updates: PhotoUpdate[] = JSON.parse(dto.existingLegendUpdates);
+        const updates: PhotoUpdate[] = JSON.parse(
+          dto.existingLegendUpdates ?? '[]',
+        ) as PhotoUpdate[];
 
         for (const u of updates) {
-          const photo = t.photos.find(p => p.id === u.id);
+          const photo = t.medias.find((p) => p.id === u.id);
           if (photo) photo.legenda = u.legenda;
         }
-      } catch {}
+      } catch {
+        /* empty */
+      }
     }
 
     // nouvelles photos
@@ -139,22 +163,23 @@ export class TravauxService {
         : [];
 
     if (files.length > 0) {
-      const newPhotos = files.map((f, i) => ({
+      const newPhotos: TravauxMedia[] = files.map((f, i) => ({
         id: this.newPhotoId(t),
+        media: `/uploads/travaux/${f.filename}`,
         image: `/uploads/travaux/${f.filename}`,
         legenda: legends[i] ?? undefined,
+        type: 'image',
       }));
 
-      t.photos.push(...newPhotos);
+      t.medias.push(...newPhotos);
 
       // update main photo si demandé
       if (dto.photoPrincipaleIndex !== undefined) {
         const idx = Number(dto.photoPrincipaleIndex);
 
-        const main =
-          t.photos[Math.max(0, Math.min(idx, t.photos.length - 1))];
+        const main = t.medias[Math.max(0, Math.min(idx, t.medias.length - 1))];
 
-        t.photo_principale = main.image;
+        t.photo_principale = main.media;
       }
     }
 
@@ -168,7 +193,7 @@ export class TravauxService {
   async remove(id: number) {
     let data = await this.findAll();
 
-    data = data.filter(t => t.id !== id);
+    data = data.filter((t) => t.id !== id);
 
     await this.storage.write(this.file, data);
 
@@ -178,17 +203,17 @@ export class TravauxService {
   async removePhoto(travauxId: number, photoId: number) {
     const data = await this.findAll();
 
-    const t = data.find(x => x.id === travauxId);
+    const t = data.find((x) => x.id === travauxId);
     if (!t) throw new NotFoundException();
 
-    const photo = t.photos.find(p => p.id === photoId);
+    const photo = t.medias.find((p) => p.id === photoId);
     if (!photo) throw new NotFoundException();
 
-    t.photos = t.photos.filter(p => p.id !== photoId);
+    t.medias = t.medias.filter((p) => p.id !== photoId);
 
     // si main supprimée
-    if (t.photo_principale === photo.image) {
-      t.photo_principale = t.photos[0]?.image ?? undefined;
+    if (t.photo_principale === photo.media) {
+      t.photo_principale = t.medias[0]?.media ?? undefined;
     }
 
     await this.storage.write(this.file, data);
@@ -198,6 +223,6 @@ export class TravauxService {
 
   async findByStatus(status: string) {
     const data = await this.findAll();
-    return data.filter(t => t.status === status);
+    return data.filter((t) => t.status === status);
   }
 }
