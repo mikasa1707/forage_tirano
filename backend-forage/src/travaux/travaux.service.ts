@@ -50,6 +50,30 @@ export class TravauxService {
     return all.length ? Math.max(...all.map((p) => p.id)) + 1 : 1;
   }
 
+  private parseLegends(value: unknown): string[] {
+    if (!value) return [];
+
+    if (Array.isArray(value)) {
+      return value.filter((x): x is string => typeof x === 'string');
+    }
+
+    if (typeof value === 'string') {
+      try {
+        const parsed: unknown = JSON.parse(value);
+
+        if (Array.isArray(parsed)) {
+          return parsed.filter((x): x is string => typeof x === 'string');
+        }
+
+        return [value];
+      } catch {
+        return [value];
+      }
+    }
+
+    return [];
+  }
+
   async create(dto: CreateTravauxDto, files: Express.Multer.File[]) {
     const data = await this.findAll();
 
@@ -76,19 +100,12 @@ export class TravauxService {
     };
 
     // images upload
-    const legends: string[] = Array.isArray(dto.legends)
-      ? dto.legends
-      : typeof dto.legends === 'string'
-        ? [dto.legends]
-        : [];
+    const legends = this.parseLegends(dto.legends);
 
     newItem.medias = files.map((f, i) => ({
-      id: this.newPhotoId(newItem),
-
+      id: Date.now() + i, // ✔ simple safe
       media: `/uploads/travaux/${f.filename}`,
-
       type: f.mimetype.startsWith('video/') ? 'video' : 'image',
-
       legenda: legends[i] ?? undefined,
     }));
 
@@ -156,31 +173,21 @@ export class TravauxService {
     }
 
     // nouvelles photos
-    const legends: string[] = Array.isArray(dto.legends)
-      ? dto.legends
-      : typeof dto.legends === 'string'
-        ? [dto.legends]
-        : [];
-
+    const legends = this.parseLegends(dto.legends);
+    console.log(dto);
     if (files.length > 0) {
+      let nextPhotoId =
+        t.medias.length > 0 ? Math.max(...t.medias.map((m) => m.id)) + 1 : 1;
+
       const newPhotos: TravauxMedia[] = files.map((f, i) => ({
-        id: this.newPhotoId(t),
+        id: nextPhotoId++,
         media: `/uploads/travaux/${f.filename}`,
         image: `/uploads/travaux/${f.filename}`,
-        legenda: legends[i] ?? undefined,
-        type: 'image',
+        type: f.mimetype.startsWith('video/') ? 'video' : 'image',
+        legenda: legends[i] ?? '',
       }));
 
       t.medias.push(...newPhotos);
-
-      // update main photo si demandé
-      if (dto.photoPrincipaleIndex !== undefined) {
-        const idx = Number(dto.photoPrincipaleIndex);
-
-        const main = t.medias[Math.max(0, Math.min(idx, t.medias.length - 1))];
-
-        t.photo_principale = main.media;
-      }
     }
 
     data[index] = t;

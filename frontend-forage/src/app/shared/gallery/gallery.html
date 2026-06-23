@@ -1,14 +1,42 @@
-<div class="gallery-overlay" (click)="closeGallery()">
-  <div class="gallery-content" (click)="$event.stopPropagation()">
-    <button class="nav prev" (click)="prev()">❮</button>
-    <button class="nav next" (click)="next()">❯</button>
+@if (photos.length) {
+  <div class="gallery-overlay" (click)="closeGallery()">
+    <div class="gallery-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeGallery()">
+        <i class="fas fa-times"></i>
+      </button>
 
-    <div class="gallery-img">
-      <img [src]="photos[index].image" alt="">
+      <button class="nav prev" (click)="prev()" [disabled]="index === 0">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="gallery-media-container">
+        @if (photos[index].type === 'image') {
+          <img
+            class="gallery-media"
+            [src]="apiUrl + (photos[index].image || photos[index].media)"
+            [alt]="photos[index].legenda || ''"
+          />
+        } @else {
+          <video
+            class="gallery-media"
+            [src]="apiUrl + (photos[index].image || photos[index].media)"
+            controls
+            autoplay
+          ></video>
+        }
+      </div>
+
+      <button class="nav next" (click)="next()" [disabled]="index === photos.length - 1">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <div class="counter">{{ index + 1 }} / {{ photos.length }}</div>
+
+      @if (photos[index].legenda) {
+        <div class="caption">
+          {{ photos[index].legenda }}
+        </div>
+      }
     </div>
-
-    <button class="close-btn" (click)="closeGallery()">×</button>
-
-    <div class="caption">{{ photos[index].legenda }}</div>
   </div>
-</div>
+}

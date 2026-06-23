@@ -48,8 +48,10 @@ export class TravauxApi {
     (p.photos ?? []).forEach((file: File) => fd.append('photos', file));
 
     // ✅ legends alignées aux nouvelles photos
-    (p.legends ?? []).forEach((txt: string) => fd.append('legenda', txt ?? ''));
+    const legends = Array.isArray(p.legends) ? p.legends : [];
 
+    legends.forEach((txt: string) => fd.append('legenda', txt ?? ''));
+    
     // ✅ si tu veux MAJ les legends existantes (optionnel)
     if (p.existingLegendUpdates) {
       fd.append('existingLegendUpdates', JSON.stringify(p.existingLegendUpdates));

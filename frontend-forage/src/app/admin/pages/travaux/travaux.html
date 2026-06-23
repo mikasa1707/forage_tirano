@@ -22,13 +22,22 @@
         </thead>
 
         <tbody>
-          @for (t of travaux; track t.id) {
+          @for (t of travaux; track t.id + '' + t.date_debut) {
             <tr>
               <td>
-                <div
-                  class="avatar"
-                  [style.backgroundImage]="'url(' + imgUrl(apiUrl + t.photo_principale) + ')'"
-                ></div>
+                @if (t.medias[0].type === 'video') {
+                  <video
+                    class="avatar-media"
+                    [src]="apiUrl + t.medias[0].media"
+                    muted
+                    preload="metadata"
+                  ></video>
+                } @else {
+                  <div
+                    class="avatar"
+                    [style.backgroundImage]="'url(' + imgUrl(apiUrl + t.medias[0].media) + ')'"
+                  ></div>
+                }
               </td>
 
               <td>
@@ -160,29 +169,33 @@
             <div class="sectionTitle">Photos existantes</div>
 
             <div class="thumbs">
-              @for (ph of existingMedias; track ph.id) {
+              @for (ph of existingMedias; track ph.id + '-' + ph.media) {
                 <div class="thumbItem">
-                  <!-- bouton supprimer -->
                   @if (canEdit()) {
-                    <button
-                      type="button"
-                      class="thumb-delete"
-                      title="Supprimer"
-                      (click)="confirmRemove(ph)"
-                    >
+                    <button type="button" class="thumb-delete" (click)="confirmRemove(ph)">
                       ✕
                     </button>
                   }
-                  <!-- thumbnail -->
+
                   <button
                     type="button"
                     class="thumb"
                     (click)="setExistingMain(ph.media)"
                     [class.main]="imgUrl(ph.media) === imgUrl(existingMainUrl)"
-                    title="Définir comme principale"
                     [disabled]="!canEdit()"
                   >
-                    <img [src]="imgUrl(ph.media)" />
+                    <div class="thumb-media">
+                      @if (ph.type === 'video') {
+                        <video [src]="imgUrl(ph.media)" muted preload="metadata"></video>
+
+                        <div class="video-overlay">
+                          <i class="fas fa-play"></i>
+                        </div>
+                      } @else {
+                        <img [src]="imgUrl(ph.media)" alt="" />
+                      }
+                    </div>
+
                     @if (imgUrl(ph.media) === imgUrl(existingMainUrl)) {
                       <span>Principale</span>
                     }
@@ -193,7 +206,7 @@
           }
           @if (canEdit()) {
             <label class="oai-field">
-              <span class="oai-label">Ajouter des photos</span>
+              <span class="oai-label">Ajouter des medias</span>
               <input
                 type="file"
                 multiple
@@ -206,10 +219,10 @@
             </label>
           }
           @if (previews.length > 0) {
-            <div class="sectionTitle">Nouvelles photos</div>
+            <div class="sectionTitle">Nouveaux médias</div>
 
             <div class="thumbs">
-              @for (p of previews; track p; let i = $index) {
+              @for (p of previews; track p.uid; let i = $index) {
                 <button
                   type="button"
                   class="thumb"
@@ -217,9 +230,20 @@
                   [class.main]="i === mainIndex"
                   title="Définir comme principale"
                 >
-                  <img [src]="p" alt="" />
+                  <div class="thumb-media">
+                    @if (p.type === 'video') {
+                      <video [src]="p.url" muted preload="metadata"></video>
+
+                      <div class="video-overlay">
+                        <i class="fas fa-play"></i>
+                      </div>
+                    } @else {
+                      <img [src]="p.url" alt="" />
+                    }
+                  </div>
+
                   @if (i === mainIndex) {
-                    <span>Principale</span>
+                    <span class="main-badge">Principale</span>
                   }
                 </button>
               }
@@ -260,7 +284,7 @@
       <div class="modal-content-body captions-grid">
         @for (
           it of captionItems;
-          track it.kind + '_' + (it.kind === 'existing' ? it.id : it.index);
+          track it.kind + '_' + (it.kind === 'existing' ? it.id : it.uid) + it.src;
           let i = $index
         ) {
           <div class="caption-card">
@@ -279,7 +303,7 @@
               class="form-control form-control-sm"
               [ngModelOptions]="{ standalone: true }"
               [(ngModel)]="it.value"
-              [name]="'caption_' + (it.kind === 'existing' ? it.id : it.index)"
+              [name]="'caption_' + (it.kind === 'existing' ? it.id : it.uid)"
               placeholder="Ex: Avant / Après, détail du chantier..."
             />
           </div>

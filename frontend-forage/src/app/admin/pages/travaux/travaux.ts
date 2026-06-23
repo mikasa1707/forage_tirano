@@ -15,7 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 
 type CaptionItem =
   | { kind: 'existing'; id: number; src: string; value: string }
-  | { kind: 'new'; index: number; src: string; value: string };
+  | { kind: 'new'; uid: string; src: string; file: File; value: string };
 
 @Component({
   selector: 'app-travaux',
@@ -33,9 +33,17 @@ export class Travaux implements OnInit {
   captionModalOpen = false;
 
   current: TravauxModel | null = null;
-
   selectedFiles: File[] = [];
-  previews: string[] = [];
+
+  previews: {
+    uid: string;
+    url: string;
+    type: 'image' | 'video';
+    file: File;
+    legenda: string;
+  }[] = [];
+
+  captionItems: CaptionItem[] = [];
   mainIndex = 0;
 
   mediaTypes: ('image' | 'video')[] = [];
@@ -44,9 +52,6 @@ export class Travaux implements OnInit {
 
   existingMainUrl: string | null = null;
   existingMedias: TravauxMedia[] = [];
-
-  // ✅ liste affichée dans modal 2 (existantes + nouvelles)
-  captionItems: CaptionItem[] = [];
 
   form: FormGroup;
 
@@ -75,6 +80,7 @@ export class Travaux implements OnInit {
     this.api.list().subscribe({
       next: (data) => {
         this.travaux = [...data];
+        console.log(this.travaux);
         this.cdr.markForCheck();
       },
       error: (err) => console.error(err),
@@ -117,12 +123,13 @@ export class Travaux implements OnInit {
     this.selectedFiles = [];
     this.legends = [];
 
-    this.previews.forEach((p) => URL.revokeObjectURL(p));
+    this.previews.forEach((p) => URL.revokeObjectURL(p.url));
     this.previews = [];
     this.mainIndex = 0;
 
     // ✅ photos existantes
     this.existingMedias = t.medias ?? [];
+    console.log(this.existingMedias);
 
     if (!t.medias || t.medias.length === 0) {
       this.api.photos(t.id).subscribe({
@@ -142,7 +149,7 @@ export class Travaux implements OnInit {
   resetForm() {
     this.form.reset({ status: 'planifie' });
 
-    this.previews.forEach((p) => URL.revokeObjectURL(p));
+    this.previews.forEach((p) => URL.revokeObjectURL(p.url));
 
     this.selectedFiles = [];
     this.previews = [];
@@ -157,26 +164,22 @@ export class Travaux implements OnInit {
 
   onFilesChange(ev: Event) {
     const input = ev.target as HTMLInputElement;
+    if (!input.files?.length) return;
 
-    if (!input.files?.length) {
-      return;
-    }
+    const files = Array.from(input.files);
 
-    const newFiles = Array.from(input.files);
+    for (const file of files) {
+      const uid = crypto.randomUUID();
 
-    for (const file of newFiles) {
       this.selectedFiles.push(file);
 
-      this.previews.push(URL.createObjectURL(file));
-
-      this.mediaTypes.push(file.type.startsWith('video/') ? 'video' : 'image');
-
-      this.legends.push('');
-    }
-
-    // si aucun média principal encore choisi
-    if (this.selectedFiles.length === newFiles.length) {
-      this.mainIndex = 0;
+      this.previews.push({
+        uid,
+        url: URL.createObjectURL(file),
+        type: file.type.startsWith('video/') ? 'video' : 'image',
+        file,
+        legenda: '',
+      });
     }
 
     input.value = '';
@@ -197,14 +200,15 @@ export class Travaux implements OnInit {
       kind: 'existing',
       id: ph.id,
       src: this.imgUrl(ph.media),
-      value: (ph as any).legenda ?? '', // adapte si ton champ diffère
+      value: ph.legenda ?? '',
     }));
 
-    const news: CaptionItem[] = this.previews.map((p, i) => ({
+    const news: CaptionItem[] = this.previews.map((p) => ({
       kind: 'new',
-      index: i,
-      src: p,
-      value: this.legends[i] ?? '',
+      uid: p.uid,
+      src: p.url,
+      file: p.file,
+      value: p.legenda ?? '',
     }));
 
     this.captionItems = [...existing, ...news];
@@ -236,48 +240,31 @@ export class Travaux implements OnInit {
   }
 
   saveFinal() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) return;
 
-    // recopie des valeurs de modal 2 vers legends (nouvelles)
-    this.captionItems
-      .filter((x) => x.kind === 'new')
-      .forEach((x) => {
-        this.legends[(x as any).index] = (x as any).value;
-      });
-
-    // optionnel : exiger légendes pour nouvelles photos
-    if (this.selectedFiles.length > 0 && this.legends.some((l) => !l?.trim())) {
-      alert('Veuillez remplir la description de chaque nouvelle photo.');
-      return;
-    }
-
-    // (optionnel) mise à jour légendes existantes si ton backend le gère
     const existingLegendUpdates = this.captionItems
-      .filter((x) => x.kind === 'existing')
-      .map((x) => ({ id: (x as any).id, legenda: (x as any).value }));
+      .filter((x): x is Extract<CaptionItem, { kind: 'existing' }> => x.kind === 'existing')
+      .map((x) => ({
+        id: x.id,
+        legenda: x.value,
+      }));
 
-    const v = this.form.getRawValue();
+    const legends = this.captionItems
+      .filter((x): x is Extract<CaptionItem, { kind: 'new' }> => x.kind === 'new')
+      .map((x) => x.value);
+
+    // const files = this.previews.map((p) => p.file);
 
     const payload = {
-      titre: v.titre,
-      description: v.description,
-      status: v.status,
-      date_debut: v.date_debut,
-      date_fin: v.date_fin,
-      localisation: v.localisation,
-      equipe_id: v.equipe_id,
+      ...this.form.getRawValue(),
 
       photos: this.selectedFiles,
       photoPrincipaleIndex: this.mainIndex,
-      legends: this.legends,
+
+      legenda: legends,
 
       existingMainUrl: this.existingMainUrl,
-
-      // ✅ à utiliser si tu ajoutes un endpoint côté API
-      existingLegendUpdates,
+      existingLegendUpdates: JSON.stringify(existingLegendUpdates),
     };
 
     const req$ =
@@ -320,7 +307,11 @@ export class Travaux implements OnInit {
   }
 
   removeNewPhoto(i: number) {
-    URL.revokeObjectURL(this.previews[i]);
+    const preview = this.previews[i];
+
+    if (preview?.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(preview.url);
+    }
 
     this.selectedFiles.splice(i, 1);
     this.previews.splice(i, 1);
@@ -331,7 +322,7 @@ export class Travaux implements OnInit {
       this.mainIndex--;
     }
 
-    if (this.mainIndex >= this.selectedFiles.length) {
+    if (this.mainIndex >= this.previews.length) {
       this.mainIndex = 0;
     }
   }

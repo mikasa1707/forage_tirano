@@ -45,6 +45,7 @@
                 muted
                 autoplay
                 playsinline
+                loop
                 preload="metadata"
                 class="thumb-video"
               ></video>
@@ -91,6 +92,7 @@
                 muted
                 preload="metadata"
                 class="thumb-video"
+                loop
               ></video>
             }
           </div>
@@ -136,7 +138,18 @@
         <div class="modal-content-body">
           @for (travphoto of filteredPhotos; track $index; let i = $index) {
             <div class="trav-photo" (click)="openGallery(i)">
-              <img class="trav-photo-img" [src]="apiUrl + travphoto.media" alt="" />
+              <!-- <img class="trav-photo-img" [src]="apiUrl + travphoto.media" alt="" /> -->
+              @if (travphoto.type === 'image') {
+                <img [src]="apiUrl + travphoto.media" />
+              } @else {
+                <video
+                  [src]="apiUrl + travphoto.media"
+                  muted
+                  preload="metadata"
+                  class="thumb-video"
+                  controls
+                ></video>
+              }
               <span class="trav-photo-legend">{{ travphoto.legenda }}</span>
             </div>
           }
