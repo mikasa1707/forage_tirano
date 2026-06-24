@@ -69,7 +69,11 @@
                     (click)="openEdit(t)"
                     [title]="canEdit() ? 'Modifier' : 'Afficher'"
                   >
-                    <i [ngClass]="canEdit() ? 'fa fa-pencil' : 'fa fa-book-open'"></i>
+                    @if (canEdit()) {
+                      <i class="fa fa-pencil"></i>
+                    } @else {
+                      <i class="fa fa-book-open"></i>
+                    }
                   </button>
 
                   @if (canDelete()) {
@@ -94,232 +98,247 @@
 
 <!-- MODAL -->
 @if (modalOpen) {
-  <div class="oai-backdrop" (click)="closeModal()"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title">
+              {{ editing ? 'Modifier un travail' : 'Ajouter un travail' }}
+            </h5>
+            <small class="text-muted">
+              Renseigne les informations principales et ajoute des photos.
+            </small>
+          </div>
 
-  <div class="oai-modal" role="dialog" aria-modal="true">
-    <div class="oai-modal__header">
-      <div>
-        <h3 class="oai-modal__title">
-          {{ editing ? 'Modifier un travail' : 'Ajouter un travail' }}
-        </h3>
-        <p class="oai-modal__subtitle">
-          Renseigne les informations principales et ajoute des photos.
-        </p>
-      </div>
-      <button type="button" class="oai-icon-btn" (click)="closeModal()" aria-label="Fermer">
-        ✕
-      </button>
-    </div>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
 
-    <form class="oai-modal__body" [formGroup]="form">
-      <div class="grid2 oai-form">
-        <label class="oai-field">
-          <span class="oai-label">Titre <b>*</b></span>
-          <input
-            class="oai-input"
-            formControlName="titre"
-            placeholder="Ex: Réhabilitation d’un puits…"
-          />
-        </label>
+        <div class="modal-body">
+          <form [formGroup]="form">
+            <div class="grid2 oai-form">
+              <label class="oai-field">
+                <span class="oai-label">Titre <b>*</b></span>
+                <input
+                  class="oai-input"
+                  formControlName="titre"
+                  placeholder="Ex: Réhabilitation d’un puits…"
+                />
+              </label>
 
-        <label class="oai-field">
-          <span class="oai-label">Status</span>
-          <select class="oai-input" formControlName="status">
-            <option value="planifie">Planifié</option>
-            <option value="en_cours">En cours</option>
-            <option value="termine">Terminé</option>
-          </select>
-        </label>
+              <label class="oai-field">
+                <span class="oai-label">Status</span>
+                <select class="oai-input" formControlName="status">
+                  <option value="planifie">Planifié</option>
+                  <option value="en_cours">En cours</option>
+                  <option value="termine">Terminé</option>
+                </select>
+              </label>
 
-        <label class="oai-field">
-          <span class="oai-label">Date début</span>
-          <input class="oai-input" type="date" formControlName="date_debut" />
-        </label>
+              <label class="oai-field">
+                <span class="oai-label">Date début</span>
+                <input class="oai-input" type="date" formControlName="date_debut" />
+              </label>
 
-        <label class="oai-field">
-          <span class="oai-label">Date fin</span>
-          <input
-            class="oai-input"
-            type="date"
-            [min]="form.get('date_debut')?.value || today"
-            formControlName="date_fin"
-          />
-        </label>
+              <label class="oai-field">
+                <span class="oai-label">Date fin</span>
+                <input
+                  class="oai-input"
+                  type="date"
+                  [min]="form.get('date_debut')?.value || today"
+                  formControlName="date_fin"
+                />
+              </label>
 
-        <label class="oai-field col2">
-          <span class="oai-label">Localisation</span>
-          <input class="oai-input" formControlName="localisation" placeholder="Ville, quartier…" />
-        </label>
+              <label class="oai-field col2">
+                <span class="oai-label">Localisation</span>
+                <input
+                  class="oai-input"
+                  formControlName="localisation"
+                  placeholder="Ville, quartier…"
+                />
+              </label>
 
-        <label class="oai-field col2">
-          <span class="oai-label">Description</span>
-          <textarea
-            class="oai-input"
-            rows="4"
-            formControlName="description"
-            placeholder="Décris le travail en quelques lignes…"
-          ></textarea>
-        </label>
+              <label class="oai-field col2">
+                <span class="oai-label">Description</span>
+                <textarea
+                  class="oai-input"
+                  rows="4"
+                  formControlName="description"
+                  placeholder="Décris le travail en quelques lignes…"
+                ></textarea>
+              </label>
 
-        <!-- PHOTOS -->
-        <div class="section col2">
-          <div class="sectionTitle">Photos</div>
+              <!-- PHOTOS -->
+              <div class="section col2">
+                <div class="sectionTitle">Photos</div>
 
-          @if (editing && existingMedias.length > 0) {
-            <div class="sectionTitle">Photos existantes</div>
+                @if (editing && existingMedias.length > 0) {
+                  <div class="sectionTitle">Photos existantes</div>
 
-            <div class="thumbs">
-              @for (ph of existingMedias; track ph.id + '-' + ph.media) {
-                <div class="thumbItem">
-                  @if (canEdit()) {
-                    <button type="button" class="thumb-delete" (click)="confirmRemove(ph)">
-                      ✕
-                    </button>
-                  }
+                  <div class="thumbs">
+                    @for (ph of existingMedias; track ph.id + '-' + ph.media) {
+                      <div class="thumbItem">
+                        @if (canEdit()) {
+                          <button type="button" class="thumb-delete" (click)="confirmRemove(ph)">
+                            ✕
+                          </button>
+                        }
 
-                  <button
-                    type="button"
-                    class="thumb"
-                    (click)="setExistingMain(ph.media)"
-                    [class.main]="imgUrl(ph.media) === imgUrl(existingMainUrl)"
-                    [disabled]="!canEdit()"
-                  >
-                    <div class="thumb-media">
-                      @if (ph.type === 'video') {
-                        <video [src]="imgUrl(ph.media)" muted preload="metadata"></video>
+                        <button
+                          type="button"
+                          class="thumb"
+                          (click)="setExistingMain(ph.media)"
+                          [class.main]="imgUrl(ph.media) === imgUrl(existingMainUrl)"
+                          [disabled]="!canEdit()"
+                        >
+                          <div class="thumb-media">
+                            @if (ph.type === 'video') {
+                              <video [src]="imgUrl(ph.media)" muted preload="metadata"></video>
 
-                        <div class="video-overlay">
-                          <i class="fas fa-play"></i>
-                        </div>
-                      } @else {
-                        <img [src]="imgUrl(ph.media)" alt="" />
-                      }
-                    </div>
+                              <div class="video-overlay">
+                                <i class="fas fa-play"></i>
+                              </div>
+                            } @else {
+                              <img [src]="imgUrl(ph.media)" alt="" />
+                            }
+                          </div>
 
-                    @if (imgUrl(ph.media) === imgUrl(existingMainUrl)) {
-                      <span>Principale</span>
-                    }
-                  </button>
-                </div>
-              }
-            </div>
-          }
-          @if (canEdit()) {
-            <label class="oai-field">
-              <span class="oai-label">Ajouter des medias</span>
-              <input
-                type="file"
-                multiple
-                accept="image/*,video/*"
-                (change)="onFilesChange($event)"
-              />
-              <small class="oai-hint">
-                La première photo sera utilisée comme photo principale
-              </small>
-            </label>
-          }
-          @if (previews.length > 0) {
-            <div class="sectionTitle">Nouveaux médias</div>
-
-            <div class="thumbs">
-              @for (p of previews; track p.uid; let i = $index) {
-                <button
-                  type="button"
-                  class="thumb"
-                  (click)="setMain(i)"
-                  [class.main]="i === mainIndex"
-                  title="Définir comme principale"
-                >
-                  <div class="thumb-media">
-                    @if (p.type === 'video') {
-                      <video [src]="p.url" muted preload="metadata"></video>
-
-                      <div class="video-overlay">
-                        <i class="fas fa-play"></i>
+                          @if (imgUrl(ph.media) === imgUrl(existingMainUrl)) {
+                            <span>Principale</span>
+                          }
+                        </button>
                       </div>
-                    } @else {
-                      <img [src]="p.url" alt="" />
                     }
                   </div>
+                }
+                @if (canEdit()) {
+                  <label class="oai-field">
+                    <span class="oai-label">Ajouter des medias</span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,video/*"
+                      (change)="onFilesChange($event)"
+                    />
+                    <small class="oai-hint">
+                      La première photo sera utilisée comme photo principale
+                    </small>
+                  </label>
+                }
+                @if (previews.length > 0) {
+                  <div class="sectionTitle">Nouveaux médias</div>
 
-                  @if (i === mainIndex) {
-                    <span class="main-badge">Principale</span>
-                  }
-                </button>
-              }
+                  <div class="thumbs">
+                    @for (p of previews; track p.uid; let i = $index) {
+                      <button
+                        type="button"
+                        class="thumb"
+                        (click)="setMain(i)"
+                        [class.main]="i === mainIndex"
+                        title="Définir comme principale"
+                      >
+                        <div class="thumb-media">
+                          @if (p.type === 'video') {
+                            <video [src]="p.url" muted preload="metadata"></video>
+
+                            <div class="video-overlay">
+                              <i class="fas fa-play"></i>
+                            </div>
+                          } @else {
+                            <img [src]="p.url" alt="" />
+                          }
+                        </div>
+
+                        @if (i === mainIndex) {
+                          <span class="main-badge">Principale</span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
             </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">
+            Annuler
+          </button>
+
+          @if (canEdit()) {
+            <button type="button" class="btn btn-primary" (click)="nextOrSave()">
+              @if (existingMedias.length > 0 || selectedFiles.length > 0) {
+                Suivant
+              } @else {
+                Enregistrer
+              }
+            </button>
           }
         </div>
       </div>
-
-      <div class="oai-modal__footer oai-footer--sticky">
-        <button type="button" class="oai-btn oai-btn--ghost" (click)="closeModal()">Annuler</button>
-        <!-- <button type="submit" class="oai-btn oai-btn--primary" [disabled]="form.invalid">
-          {{ editing ? 'Enregistrer' : 'Créer' }}
-        </button> -->
-        @if (canEdit()) {
-          <button class="oai-btn oai-btn--ghost" type="button" (click)="nextOrSave()">
-            @if (existingMedias.length > 0 || selectedFiles.length > 0) {
-              Suivant
-            } @else {
-              Enregistrer
-            }
-          </button>
-        }
-      </div>
-    </form>
+    </div>
   </div>
+
+  <div class="modal-backdrop fade show"></div>
 }
 
 @if (captionModalOpen) {
-  <div class="oai-backdrop"></div>
-  <div class="oai-modal" (click)="closeCaptionModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-content-head">
-        <h3 class="m-0">Descriptions des photos</h3>
-        <i class="fas fa-close" (click)="closeCaptionModal()"></i>
-      </div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Descriptions des médias</h5>
 
-      <!-- 👇 zone scrollable -->
-      <div class="modal-content-body captions-grid">
-        @for (
-          it of captionItems;
-          track it.kind + '_' + (it.kind === 'existing' ? it.id : it.uid) + it.src;
-          let i = $index
-        ) {
-          <div class="caption-card">
-            <img class="caption-img" [src]="it.src" alt="" />
+          <button type="button" class="btn-close" (click)="closeCaptionModal()"></button>
+        </div>
 
-            <label class="caption-label">
-              @if (it.kind === 'existing') {
-                Existante
+        <div class="modal-body captions-grid">
+          @for (
+            it of captionItems;
+            track it.kind + '_' + (it.kind === 'existing' ? it.id : it.uid) + it.src;
+            let i = $index
+          ) {
+            <div class="caption-card">
+              @if (it.type === 'video') {
+                <video class="caption-img" [src]="it.src" muted preload="metadata" controls></video>
               } @else {
-                Nouvelle
+                <img class="caption-img" [src]="it.src" alt="" />
               }
-              #{{ i + 1 }}
-            </label>
 
-            <input
-              class="form-control form-control-sm"
-              [ngModelOptions]="{ standalone: true }"
-              [(ngModel)]="it.value"
-              [name]="'caption_' + (it.kind === 'existing' ? it.id : it.uid)"
-              placeholder="Ex: Avant / Après, détail du chantier..."
-            />
-          </div>
-        }
-      </div>
+              <label class="caption-label">
+                @if (it.kind === 'existing') {
+                  Existante
+                } @else {
+                  Nouvelle
+                }
+                #{{ i + 1 }}
+              </label>
 
-      <!-- 👇 footer sticky -->
-      <div class="modal-footer modal-footer--sticky">
-        <button class="btn btn-outline-secondary" type="button" (click)="closeCaptionModal()">
-          Retour
-        </button>
+              <input
+                class="form-control"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="it.value"
+                [name]="'caption_' + (it.kind === 'existing' ? it.id : it.uid)"
+                placeholder="Description..."
+              />
+            </div>
+          }
+        </div>
 
-        <button class="btn btn-outline-light" type="button" (click)="saveFinal()">
-          Valider & enregistrer
-        </button>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" (click)="closeCaptionModal()">
+            Retour
+          </button>
+
+          <button class="btn btn-success" type="button" (click)="saveFinal()">
+            Valider & enregistrer
+          </button>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="modal-backdrop fade show"></div>
 }

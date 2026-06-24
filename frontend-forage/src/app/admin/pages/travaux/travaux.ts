@@ -14,8 +14,8 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth.service';
 
 type CaptionItem =
-  | { kind: 'existing'; id: number; src: string; value: string }
-  | { kind: 'new'; uid: string; src: string; file: File; value: string };
+  | { kind: 'existing'; id: number; src: string; value: string; type: string }
+  | { kind: 'new'; uid: string; src: string; file: File; value: string; type: string };
 
 @Component({
   selector: 'app-travaux',
@@ -201,6 +201,7 @@ export class Travaux implements OnInit {
       id: ph.id,
       src: this.imgUrl(ph.media),
       value: ph.legenda ?? '',
+      type: ph.type,
     }));
 
     const news: CaptionItem[] = this.previews.map((p) => ({
@@ -209,6 +210,7 @@ export class Travaux implements OnInit {
       src: p.url,
       file: p.file,
       value: p.legenda ?? '',
+      type: p.type,
     }));
 
     this.captionItems = [...existing, ...news];
@@ -233,10 +235,12 @@ export class Travaux implements OnInit {
 
     this.buildCaptionItems();
     this.captionModalOpen = true;
+    this.modalOpen = false;
   }
 
   closeCaptionModal() {
     this.captionModalOpen = false;
+    this.modalOpen = true;
   }
 
   saveFinal() {

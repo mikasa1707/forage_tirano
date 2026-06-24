@@ -30,7 +30,6 @@ export class TravauxApi {
 
   private toFormData(p: any): FormData {
     const fd = new FormData();
-
     // champs texte
     fd.append('titre', p.titre ?? '');
     fd.append('description', p.description ?? '');
@@ -48,13 +47,14 @@ export class TravauxApi {
     (p.photos ?? []).forEach((file: File) => fd.append('photos', file));
 
     // ✅ legends alignées aux nouvelles photos
-    const legends = Array.isArray(p.legends) ? p.legends : [];
+    // const legends = Array.isArray(p.legends) ? p.legends : [];
 
-    legends.forEach((txt: string) => fd.append('legenda', txt ?? ''));
-    
+    // legends.forEach((txt: string) => fd.append('legenda', txt ?? ''));
+    fd.append('legends', JSON.stringify(p.legenda ?? []));
+
     // ✅ si tu veux MAJ les legends existantes (optionnel)
     if (p.existingLegendUpdates) {
-      fd.append('existingLegendUpdates', JSON.stringify(p.existingLegendUpdates));
+      fd.append('existingLegendUpdates', p.existingLegendUpdates);
     }
 
     return fd;
