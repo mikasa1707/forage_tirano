@@ -10,6 +10,8 @@ async function bootstrap() {
   app.enableCors({
     origin: ['http://localhost:4200', 'https://forage-tirano.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders:
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     credentials: true,
   });
 
