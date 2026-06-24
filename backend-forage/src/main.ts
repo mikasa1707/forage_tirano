@@ -8,7 +8,7 @@ async function bootstrap() {
   console.log('Uploads path:', join(process.cwd(), 'uploads'));
 
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://forage-tirano.vercel.app/'],
+    origin: ['http://localhost:4200', 'https://forage-tirano.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
