@@ -20,7 +20,7 @@ export class TravauxApi {
     if (!isPlatformBrowser(this.platformId)) {
       return of([]); // Retourne un tableau vide pendant le prérendu
     }
-    return this.http.get<TravauxModel[]>(this.base, { withCredentials: true }).pipe(
+    return this.http.get<TravauxModel[]>(this.base).pipe(
       catchError(this.handleError)
     );
   }
@@ -30,7 +30,7 @@ export class TravauxApi {
     if (!isPlatformBrowser(this.platformId)) {
       return of(null);
     }
-    return this.http.get<TravauxModel>(`${this.base}/${id}`, { withCredentials: true }).pipe(
+    return this.http.get<TravauxModel>(`${this.base}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
@@ -63,7 +63,7 @@ export class TravauxApi {
     if (!isPlatformBrowser(this.platformId)) {
       return of(null);
     }
-    return this.http.delete(`${this.base}/${id}`, { withCredentials: true }).pipe(
+    return this.http.delete(`${this.base}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
