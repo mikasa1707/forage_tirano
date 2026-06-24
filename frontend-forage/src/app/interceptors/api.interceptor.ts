@@ -6,11 +6,17 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
 
   if (!isPlatformBrowser(platformId)) {
-    return next(req); // SSR safe bypass
+    return next(req);
   }
-  console.log('HTTP interceptor fired');
+
+  if (!req.url.includes('/admin')) {
+    return next(req);
+  }
+
   const clonedReq = req.clone({
-    headers: req.headers.set('Authorization', 'Bearer xyz'),
+    setHeaders: {
+      Authorization: 'Bearer xyz',
+    },
   });
 
   return next(clonedReq);
