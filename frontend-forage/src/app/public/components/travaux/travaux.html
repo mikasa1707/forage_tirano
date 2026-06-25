@@ -54,7 +54,7 @@
 
           <div class="hero-overlay"></div>
 
-          <div class="hero-content">
+          <div class="hero-content w-100">
             <span class="hero-badge" [ngClass]="selectedTrav.status">
               {{ selectedTrav.status }}
             </span>
@@ -63,14 +63,22 @@
 
             <p>{{ selectedTrav.description }}</p>
 
-            <div class="hero-meta">
-              <span>📍 {{ selectedTrav.localisation }}</span>
-              <span>📅 {{ selectedTrav.date_debut | date }}</span>
+            <div class="hero-meta d-flex gap-2 flex-wrap">
+              <span class="meta-item">
+                📍 <span>{{ selectedTrav.localisation }}</span>
+              </span>
+
+              <span class="meta-item">
+                📅 <span>{{ selectedTrav.date_debut | date: 'dd MMM yyyy' }}</span> -
+                @if (selectedTrav.date_fin) {
+                  <span>{{ selectedTrav.date_fin | date: 'dd MMM yyyy' }}</span>
+                }
+              </span>
             </div>
 
             <div class="hero-actions">
-              <button class="btn btn-primary" (click)="selectTravaux(selectedTrav)">
-                Voir galerie
+              <button class="btn btn-outline-light border-0" (click)="selectTravaux(selectedTrav)">
+                <i class="fas fa-images"></i>
               </button>
             </div>
           </div>
